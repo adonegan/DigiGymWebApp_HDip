@@ -28,6 +28,12 @@ namespace DigiGymWebApp_HDip.Models
         public DateTime DateOfBirth { get; set; }
 
         public UserType UserType { get; set; }
+
+        //Navigation properties
+        public List<Workout> Workouts { get; set; }
+        public List<Goal> Goals { get; set; }
+        public List<Food> FoodDiary { get; set; }
+        public List<Water> WaterEntries { get; set; }
     }
 
 }
