@@ -39,8 +39,15 @@ namespace DigiGymWebApp_HDip.Models
         public int Fat { get; set; }
 
         [Required]
+        [DisplayName("Meal Type")]
         public MealTypes MealType { get; set; }
 
+        [Required]
+        public int Grams { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         //Foreign key
         public string Id { get; set; }

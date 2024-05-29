@@ -34,6 +34,7 @@ namespace DigiGymWebApp_HDip.Models
         public List<Goal> Goals { get; set; }
         public List<Food> FoodDiary { get; set; }
         public List<Water> WaterEntries { get; set; }
+        public List<UserProfile> ProfileEntries { get; set; }
     }
 
 }

@@ -11,6 +11,7 @@ namespace DigiGymWebApp_HDip.Data
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<Food> FoodDiary { get; set; }
         public DbSet<Water> WaterEntries { get; set; }
+        public DbSet<UserProfile> ProfileEntries { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -43,6 +44,12 @@ namespace DigiGymWebApp_HDip.Data
             builder.Entity<Water>()
                 .HasOne(w => w.User)
                 .WithMany(u => u.WaterEntries)
+                .HasForeignKey(w => w.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserProfile>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.ProfileEntries)
                 .HasForeignKey(w => w.Id)
                 .OnDelete(DeleteBehavior.Cascade);
         }
