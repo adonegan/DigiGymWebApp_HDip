@@ -1,5 +1,6 @@
 using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
+using DigiGymWebApp_HDip.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ public class Program
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
+        builder.Services.AddScoped<CalorieCounterService, CalorieCounterService>();
 
         var app = builder.Build();
 
