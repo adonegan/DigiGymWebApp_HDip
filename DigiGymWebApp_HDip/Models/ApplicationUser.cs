@@ -4,17 +4,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DigiGymWebApp_HDip.Models
 {
-    public enum UserType
+    public enum UserTypes
     {
         Admin, Trainer, Client
     }
 
+    public enum ApprovalStatuses
+    {
+        Pending, Approved, Rejected
+    }
+
     public class ApplicationUser : IdentityUser 
     {
-        [Required] 
+        [Required]
+        [DisplayName("First Name")]
         public string FirstName { get; set; }
 
         [Required]
+        [DisplayName("Last Name")]
         public string LastName { get; set; }
 
         [Required]
@@ -27,7 +34,11 @@ namespace DigiGymWebApp_HDip.Models
         [DisplayName("Date of Birth")]
         public DateTime DateOfBirth { get; set; }
 
-        public UserType UserType { get; set; }
+        public UserTypes UserType { get; set; }
+
+        //Trainer approval
+        [DisplayName("Approved?")]
+        public ApprovalStatuses ApprovalStatus { get; set; }
 
         //Navigation properties
         public List<Workout> Workouts { get; set; }

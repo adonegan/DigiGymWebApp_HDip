@@ -35,8 +35,8 @@
 
             <div class="form-floating mb-3">
                 <select class="form-control" asp-for="Input.UserType">>
-                    <option value="@EnumToUserRoleMapping.ToRole(UserType.Client)">Client</option>
-                    <option value="@EnumToUserRoleMapping.ToRole(UserType.Trainer)">Trainer</option>
+                    <option value="@EnumToUserRoleMapping.ToRole(UserTypes.Client)">Client</option>
+                    <option value="@EnumToUserRoleMapping.ToRole(UserTypes.Trainer)">Trainer</option>
                 </select>
                 <label asp-for="Input.UserType">Client or Trainer?</label>
 

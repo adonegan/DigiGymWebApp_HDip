@@ -4,15 +4,15 @@ namespace DigiGymWebApp_HDip.Helpers
 {
     public class EnumToUserRoleMapping
     {
-        public static string ToRole(UserType userType)
+        public static string ToRole(UserTypes userType)
         {
             switch (userType) 
             {
-                case UserType.Admin:
+                case UserTypes.Admin:
                     return "Admin";
-                case UserType.Trainer:
+                case UserTypes.Trainer:
                     return "Trainer";
-                case UserType.Client:
+                case UserTypes.Client:
                     return "Client";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(userType), userType, null);

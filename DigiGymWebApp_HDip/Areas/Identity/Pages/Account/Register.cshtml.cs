@@ -95,7 +95,7 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
             public DateTime DateOfBirth { get; set; }
 
             [Required]
-            public UserType UserType { get; set; }
+            public UserTypes UserType { get; set; }
 
             [Required]
             [EmailAddress]
@@ -141,7 +141,11 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
-                user.UserType = Input.UserType;
+
+                if (Input.UserType == UserTypes.Trainer)
+                {
+                    user.ApprovalStatus = ApprovalStatuses.Pending;
+                }
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

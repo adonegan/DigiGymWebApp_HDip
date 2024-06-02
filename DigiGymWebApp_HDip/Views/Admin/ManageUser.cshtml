@@ -1,0 +1,58 @@
+﻿@model DigiGymWebApp_HDip.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "ManageUser";
+}
+
+<h1>Manage User</h1>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApprovalStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApprovalStatus)
+        </dd>
+    </dl>
+
+
+</div>
+<div>
+    <a asp-action="ApproveTrainer" asp-route-id="@Model?.Id">Approve Trainer</a> |
+    <a asp-action="RejectTrainer" asp-route-id="@Model?.Id">Reject Trainer</a> 
+    <br />
+    <a asp-action="PendingApproval">Back to Pending List</a>
+</div>
