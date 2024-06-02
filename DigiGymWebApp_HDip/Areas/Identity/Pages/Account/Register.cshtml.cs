@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using DigiGymWebApp_HDip.Helpers;
 using DigiGymWebApp_HDip.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -31,13 +33,15 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole>_roleManager;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +49,7 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -90,6 +95,9 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
             public DateTime DateOfBirth { get; set; }
 
             [Required]
+            public UserType UserType { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -133,8 +141,7 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
-                user.UserType = UserType.Client;
-                
+                user.UserType = Input.UserType;
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -157,6 +164,16 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+
+                    string roleName = EnumToUserRoleMapping.ToRole(Input.UserType);
+
+                    if (!await _roleManager.RoleExistsAsync(roleName))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+
+                    await _userManager.AddToRoleAsync(user, roleName);
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -167,13 +184,12 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

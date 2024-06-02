@@ -1,4 +1,6 @@
 ﻿@page
+@using DigiGymWebApp_HDip.Helpers
+@using DigiGymWebApp_HDip.Models
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -29,6 +31,16 @@
                 <input asp-for="Input.DateOfBirth" class="form-control" aria-required="true" placeholder="12/12/2012" />
                 <label asp-for="Input.DateOfBirth">Date of Birth</label>
                 <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <select class="form-control" asp-for="Input.UserType">>
+                    <option value="@EnumToUserRoleMapping.ToRole(UserType.Client)">Client</option>
+                    <option value="@EnumToUserRoleMapping.ToRole(UserType.Trainer)">Trainer</option>
+                </select>
+                <label asp-for="Input.UserType">Client or Trainer?</label>
+
+                <span asp-validation-for="Input.UserType" class="text-danger"></span>
             </div>
 
             <hr />
