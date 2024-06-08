@@ -2,11 +2,12 @@
 
 namespace DigiGymWebApp_HDip.Helpers
 {
-    public class EnumToUserRoleMapping
+    public static class EnumToUserRoleMapping
     {
-        public static string ToRole(UserTypes userType)
+        // String value necessary for new Claim creation
+        public static string EnumRoleToString(this UserTypes userType)
         {
-            switch (userType) 
+            switch (userType)
             {
                 case UserTypes.Admin:
                     return "Admin";

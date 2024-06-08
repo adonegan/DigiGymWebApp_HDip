@@ -1,4 +1,5 @@
 using DigiGymWebApp_HDip.Data;
+using DigiGymWebApp_HDip.Helpers;
 using DigiGymWebApp_HDip.Models;
 using DigiGymWebApp_HDip.Services;
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +17,25 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+        // Remove AddDefaultIdentity, add IdentityRole as parameter because I'm using roles
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        //Ensures Dependency Injection knows about my custom Claims maker
+        builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, DigiGymClaimsFactory>();
+
+        // Role-based authorisation
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("TrainerOnly", policy => policy.RequireRole("Trainer"));
+            options.AddPolicy("ClientOnly", policy => policy.RequireRole("Client"));
+        });
+
+        
         builder.Services.AddControllersWithViews();
+        builder.Services.AddRazorPages();
         builder.Services.AddScoped<CalorieCounterService, CalorieCounterService>();
 
         var app = builder.Build();
@@ -37,6 +53,7 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllerRoute(
