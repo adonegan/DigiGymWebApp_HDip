@@ -1,12 +1,15 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Helpers;
 using DigiGymWebApp_HDip.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace DigiGymWebApp_HDip.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -64,6 +67,40 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return RedirectToAction("ManageUser", user);
 
+        }
+
+        public async Task<IActionResult> Trainers()
+        {
+            var trainers = await _userManager.Users
+                                .Where(u=>u.UserType == UserTypes.Trainer && u.ApprovalStatus == ApprovalStatuses.Approved)
+                                .ToListAsync();
+            return View(trainers);
+        }
+
+        public async Task<IActionResult> Admins()
+        {
+            var admins = await _userManager.Users
+                                .Where(a => a.UserType == UserTypes.Admin)
+                                .ToListAsync();
+            return View(admins);
+        }
+
+        public async Task<IActionResult> UpgradeToAdmin(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.UserType = UserTypes.Admin;
+            user.ApprovalStatus = ApprovalStatuses.None;
+            _context.SaveChanges();
+
+            return RedirectToAction("ManageUser", user);
+        }
+
+        public async Task<IActionResult> Clients()
+        {
+            var clients = await _userManager.Users
+                .Where(c=>c.UserType == UserTypes.Client)
+                .ToListAsync();
+            return View(clients);
         }
     }
 }
