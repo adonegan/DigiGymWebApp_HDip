@@ -20,6 +20,7 @@ public class Program
         // Remove AddDefaultIdentity, add IdentityRole as parameter because I'm using roles
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultUI()
             .AddDefaultTokenProviders();
 
         //Ensures Dependency Injection knows about my custom Claims maker

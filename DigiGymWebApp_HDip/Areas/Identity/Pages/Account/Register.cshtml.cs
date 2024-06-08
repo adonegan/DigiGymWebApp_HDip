@@ -172,7 +172,7 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
 
-                    string roleName = EnumToUserRoleMapping.ToRole(Input.UserType);
+                    string roleName = EnumToUserRoleMapping.EnumRoleToString(Input.UserType);
 
                     if (!await _roleManager.RoleExistsAsync(roleName))
                     {
