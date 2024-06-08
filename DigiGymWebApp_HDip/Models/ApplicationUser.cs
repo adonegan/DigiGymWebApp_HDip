@@ -11,7 +11,7 @@ namespace DigiGymWebApp_HDip.Models
 
     public enum ApprovalStatuses
     {
-        Pending, Approved, Rejected
+        None, Pending, Approved, Rejected
     }
 
     public class ApplicationUser : IdentityUser 
@@ -38,7 +38,7 @@ namespace DigiGymWebApp_HDip.Models
 
         //Trainer approval
         [DisplayName("Approved?")]
-        public ApprovalStatuses ApprovalStatus { get; set; }
+        public ApprovalStatuses? ApprovalStatus { get; set; }
 
         //Navigation properties
         public List<Workout> Workouts { get; set; }

@@ -141,12 +141,15 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DateOfBirth = Input.DateOfBirth;
+                user.UserType = Input.UserType;
 
                 if (Input.UserType == UserTypes.Trainer)
                 {
                     user.ApprovalStatus = ApprovalStatuses.Pending;
+                } else
+                {
+                    user.ApprovalStatus= ApprovalStatuses.None;
                 }
-
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -205,7 +208,7 @@ namespace DigiGymWebApp_HDip.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
                     $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
