@@ -4,111 +4,133 @@
     ViewBag.Title = "Food Details";
 }
 
-<h2>Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h2>
+<h2 class="calcount">Calories today: @ViewBag.TotalCalories</h2>
+<h3>Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h3>
 
-@if (Model.Any())
+
+@foreach (var foodItem in Model)
 {
-    <h4>Breakfast</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Where(m => m.MealType == MealTypes.Breakfast))
-            {
+    @if (foodItem.MealType == MealTypes.Breakfast)
+    {
+        <h4>Breakfast</h4>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                    </td>
+                    <th>Name</th>
+                    <th>Calories</th>
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Breakfast))
+                {
+                    <tr>
+                        <td>@item.FoodName</td>
+                        <td>@item.Calories</td>
+                        
+                    </tr>
+                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> 
+                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                }
+            </tbody>
 
-    </table>
+        </table>
+    }
+    else
+    {
+        <p>No Breakfast Yet.</p>
+    }
 
-
-    <h4>Lunch</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Where(m => m.MealType == MealTypes.Lunch))
-            {
+    @if (foodItem.MealType == MealTypes.Lunch)
+    {
+        <div class="container-mealtype">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                    </td>
+                    <th>Name</th>
+                    <th>Calories</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Lunch))
+                {
+                    <tr>
+                        <td>@item.FoodName</td>
+                        <td>@item.Calories</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+    }
+    else
+    {
+        <p>No Lunch Yet.</p>
+    }
 
-    <h4>Dinner</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Where(m => m.MealType == MealTypes.Dinner))
-            {
+    @if (foodItem.MealType == MealTypes.Dinner)
+    {
+        <div class="container-mealtype">
+        <h4>Dinner</h4>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                    </td>
+                    <th>Name</th>
+                    <th>Calories</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Dinner))
+                {
+                    <tr>
+                        <td>@item.FoodName</td>
+                        <td>@item.Calories</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+    }
 
-    <h4>Snack</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Where(m => m.MealType == MealTypes.Snack))
-            {
+    @if (foodItem.MealType == MealTypes.Snack)
+    {
+        <h4>Snack</h4>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                    </td>
+                    <th>Name</th>
+                    <th>Calories</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-
-    <p>Total Calories for @DateTime.Now.ToString("yyyy-MM-dd"): @ViewBag.TotalCalories</p>
-}
-else
-{
-    <p>No food entries found for this date.</p>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Snack))
+                {
+                    <tr>
+                        <td>@item.FoodName</td>
+                        <td>@item.Calories</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No Snack Yet.</p>
+    }
 }
