@@ -1,6 +1,7 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
 using DigiGymWebApp_HDip.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using System.Net.Sockets;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
+    [Authorize(Policy = "ClientOnly")]
     public class FoodController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,29 +26,30 @@ namespace DigiGymWebApp_HDip.Controllers
             _context.Database.EnsureCreated();
         }
 
-        public async Task<ActionResult> FoodDiary()
+        public async Task<ActionResult> FoodDiary(string id)
         {
+            var userId = _userManager.GetUserId(User);
             var dates = await _context.FoodDiary
+                .Where(f => f.Id == userId)
                 .Select(f => f.CreatedAt.Date)
+                 // Show single date, even if date has multiple entries
                 .Distinct()
                 .ToListAsync();
             return View(dates);
         }
 
-
         public async Task<ActionResult> Dates(DateTime date)
         {
+            var userId = _userManager.GetUserId(User);
             var foodEntry = await _context.FoodDiary
-                    .Where(f => f.CreatedAt.Date == date.Date)
+                    .Where(f => f.CreatedAt.Date == date.Date && f.Id == userId)
                     .ToListAsync();
 
-            var totalCalories = await _calorieCounterService.GetTotalCalories(date);
+            var totalCalories = await _calorieCounterService.GetTotalCalories(date, userId);
             ViewBag.TotalCalories = totalCalories;
 
             return View(foodEntry);
         }
-
-
 
         public async Task<IActionResult> Create()
         {
@@ -64,6 +67,12 @@ namespace DigiGymWebApp_HDip.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Get user, string type
+                var userId = _userManager.GetUserId(User);
+                // Set Id property value to user's id
+                food.Id = userId;
+                food.CreatedAt = DateTime.Now;
+
                 _context.Add(food);
                 await _context.SaveChangesAsync();
 
@@ -77,11 +86,13 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(food);
         }
 
-
         public async Task<IActionResult> Edit(int? id)
         {   
-            var foodEntry = await _context.FoodDiary.FindAsync(id);
-            var users = await _userManager.Users.ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var foodEntry = await _context.FoodDiary
+                                  .Where(f => f.FoodID == id && f.Id == userId)
+                                   // Return first match
+                                  .FirstOrDefaultAsync();
 
             var enumMealTypeValues = Enum.GetValues(typeof(MealTypes));
             var selectListMealType = new SelectList(enumMealTypeValues, foodEntry.MealType);
@@ -97,6 +108,14 @@ namespace DigiGymWebApp_HDip.Controllers
         {
             if (ModelState.IsValid)
             { 
+                var userId = _userManager.GetUserId(User);
+                var existingFoodEntry = await _context.FoodDiary
+                                                  .Where(f => f.FoodID == id && f.Id == userId)
+                                                  .FirstOrDefaultAsync();
+
+                foodEntry.Id = existingFoodEntry.Id;
+                foodEntry.CreatedAt = existingFoodEntry.CreatedAt;
+
                 _context.Update(foodEntry);
                 await _context.SaveChangesAsync();
 
@@ -107,14 +126,20 @@ namespace DigiGymWebApp_HDip.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var foodEntry = await _context.FoodDiary.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var foodEntry = await _context.FoodDiary
+                                  .Where(f => f.FoodID == id && f.Id == userId)
+                                  .FirstOrDefaultAsync();
 
             return View(foodEntry);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var foodEntry = await _context.FoodDiary.FindAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var foodEntry = await _context.FoodDiary
+                                          .Where(f => f.FoodID == id && f.Id == userId)
+                                          .FirstOrDefaultAsync();
 
             _context.Remove(foodEntry);
             await _context.SaveChangesAsync();
