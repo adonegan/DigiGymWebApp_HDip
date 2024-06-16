@@ -1,6 +1,12 @@
 ﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Food>
 
 @{
+    var breakfast = Model.Where(b => b.MealType == MealTypes.Breakfast).ToList();
+    var lunch = Model.Where(l => l.MealType == MealTypes.Lunch).ToList();
+    var dinner = Model.Where(d => d.MealType == MealTypes.Dinner).ToList();
+    var snack = Model.Where(s => s.MealType == MealTypes.Snack).ToList();
+}
+@{
     ViewBag.Title = "Food Details";
 }
 
@@ -8,129 +14,147 @@
 <h3>Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h3>
 
 
-@foreach (var foodItem in Model)
+@if (breakfast.Any())
 {
-    @if (foodItem.MealType == MealTypes.Breakfast)
-    {
-        <h4>Breakfast</h4>
-        <table class="table">
-            <thead>
+    <h4>Breakfast</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Calories</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in breakfast)
+            {
                 <tr>
-                    <th>Name</th>
-                    <th>Calories</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Breakfast))
-                {
-                    <tr>
-                        <td>@item.FoodName</td>
-                        <td>@item.Calories</td>
+                    <td>@item.FoodName</td>
+                    <td>@item.Calories</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                    </td>
                         
-                    </tr>
-                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> 
-                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
-                }
-            </tbody>
-
-        </table>
-    }
-    else
-    {
-        <p>No Breakfast Yet.</p>
-    }
-
-    @if (foodItem.MealType == MealTypes.Lunch)
-    {
-        <div class="container-mealtype">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Calories</th>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Lunch))
-                {
-                    <tr>
-                        <td>@item.FoodName</td>
-                        <td>@item.Calories</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        </div>
-    }
-    else
-    {
-        <p>No Lunch Yet.</p>
-    }
 
-    @if (foodItem.MealType == MealTypes.Dinner)
-    {
-        <div class="container-mealtype">
-        <h4>Dinner</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Calories</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Dinner))
-                {
-                    <tr>
-                        <td>@item.FoodName</td>
-                        <td>@item.Calories</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        </div>
-    }
+            }
+        </tbody>
 
-    @if (foodItem.MealType == MealTypes.Snack)
-    {
-        <h4>Snack</h4>
-        <table class="table">
-            <thead>
+    </table>
+}
+else
+{
+    <h4>Breakfast</h4>
+    <p>No entries. <a asp-action="Create"> Add</a></p>
+}
+
+
+@if (lunch.Any())
+{
+    <h4>Lunch</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Calories</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in lunch)
+            {
                 <tr>
-                    <th>Name</th>
-                    <th>Calories</th>
+                    <td>@item.FoodName</td>
+                    <td>@item.Calories</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                    </td>
+
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Where(m => m.MealType == MealTypes.Snack))
-                {
-                    <tr>
-                        <td>@item.FoodName</td>
-                        <td>@item.Calories</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.FoodID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.FoodID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No Snack Yet.</p>
-    }
+
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <h4>Lunch</h4>
+    <p>No entries. <a asp-action="Create"> Add</a></p>
+}
+
+@if (dinner.Any())
+{
+    <h4>Dinner</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Calories</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in dinner)
+            {
+                <tr>
+                    <td>@item.FoodName</td>
+                    <td>@item.Calories</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                    </td>
+
+                </tr>
+
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <h4>Dinner</h4>
+    <p>No entries. <a asp-action="Create">Add</a></p>
+}
+
+@if (snack.Any())
+{
+    <h4>Snack</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Calories</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in snack)
+            {
+                <tr>
+                    <td>@item.FoodName</td>
+                    <td>@item.Calories</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                    </td>
+
+                </tr>
+
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <h4>Snack</h4>
+    <p>No entries. <a asp-action="Create"> Add</a></p>
 }
