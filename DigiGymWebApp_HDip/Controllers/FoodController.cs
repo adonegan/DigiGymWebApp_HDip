@@ -111,6 +111,8 @@ namespace DigiGymWebApp_HDip.Controllers
                 var userId = _userManager.GetUserId(User);
                 var existingFoodEntry = await _context.FoodDiary
                                                   .Where(f => f.FoodID == id && f.Id == userId)
+                                                   // Important
+                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
                 foodEntry.Id = existingFoodEntry.Id;
