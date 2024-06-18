@@ -1,0 +1,90 @@
+﻿@model DigiGymWebApp_HDip.Models.UserProfile;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.User.FirstName's Profile</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <hr />
+
+            @if (Model != null)
+            {
+                <dl class="row">
+                    <dt class="col-sm-3">
+                        Name:
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Model.User.FirstName @Model.User.LastName
+                    </dd>
+                    <dt class="col-sm-3">
+                        DOB:
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Model.User.DateOfBirth.ToString("dd-MM-yyyy")
+                    </dd>
+                    <dt class="col-sm-3">
+                        Weight:
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Weight) lbs
+                    </dd>
+                    <dt class="col-sm-3">
+                        Height:
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Height) cm
+                    </dd>
+                    <dt class="col-sm-3">
+                        Gender
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Gender)
+                    </dd>
+                    <dt class="col-sm-3">
+                        Updated:
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Timestamp)
+                    </dd>
+                </dl>
+        }
+        else
+        {
+            <p>No profile entry found.</p>
+            <a asp-action="Create" asp-route-id="@Model?.ProfileID">Edit</a>
+        }
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.ProfileID">Edit</a> 
+
+        </div>
+        </div>
+
+
+        <div class="col-sm-6">
+            <div class="main-stats">
+                <hr />
+
+                @if (Model != null)
+                {
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                            Body Mass Index:
+                        </dt>
+                        <dd class="col-sm-8">
+                            @ViewBag.BMIService
+                        </dd>
+                    </dl>
+                }
+                else
+                {
+                    <p>No BMI</p>
+                    <a asp-action="Create" asp-route-id="@Model?.ProfileID">Create</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

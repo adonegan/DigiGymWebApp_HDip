@@ -42,6 +42,7 @@ public class Program
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<CalorieCounterService, CalorieCounterService>();
+        builder.Services.AddScoped<BMIService, BMIService>();
 
         var app = builder.Build();
 
