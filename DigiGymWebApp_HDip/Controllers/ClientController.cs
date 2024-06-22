@@ -48,7 +48,6 @@ namespace DigiGymWebApp_HDip.Controllers
                 // Attribute user to record
                 var userId = _userManager.GetUserId(User);
                 profile.Id = userId;
-                profile.Timestamp = DateTime.Now;
 
                 _context.Add(profile);
                 await _context.SaveChangesAsync();
@@ -78,22 +77,21 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return View(profileEntry);
         }
-            
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProfileID,Weight,Height,Gender,Timestamp")] UserProfile profileEntry)
+        public async Task<IActionResult> Edit(int id, [Bind("ProfileID,Height,Gender")] UserProfile profileEntry)
         {
             if (ModelState.IsValid)
-            { 
+            {
                 var userId = _userManager.GetUserId(User);
                 var existingProfileEntry = await _context.ProfileEntries
                                                   .Where(p => p.ProfileID == id && p.Id == userId)
-                                                   // Important
+                                                  // Important
                                                   .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
                 profileEntry.Id = existingProfileEntry.Id;
-                profileEntry.Timestamp = profileEntry.Timestamp;
 
                 _context.Update(profileEntry);
                 await _context.SaveChangesAsync();
@@ -108,11 +106,19 @@ namespace DigiGymWebApp_HDip.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var profileEntry = await _context.ProfileEntries
-                                         // Leverage navigation property in View
+                                        // Leverage navigation property in View
                                         .Include(p => p.User)
                                         .Where(p => p.Id == userId)
-                                        .OrderByDescending(p => p.Timestamp)
                                         .FirstOrDefaultAsync();
+
+            // get latest weight entry
+            var weightEntry = await _context.WeightEntries
+                                        .Include(p => p.User)
+                                        .Where (p => p.Id == userId)
+                                        .OrderByDescending(w => w.Timestamp) 
+                                        .FirstOrDefaultAsync();
+
+            ViewBag.WeightEntry = weightEntry;
 
             // make BMI value available
             var bmiService = await _bmiService.GetBMI(date, userId);

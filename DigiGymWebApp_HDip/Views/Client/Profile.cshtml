@@ -27,12 +27,6 @@
                         @Model.User.DateOfBirth.ToString("dd-MM-yyyy")
                     </dd>
                     <dt class="col-sm-3">
-                        Weight:
-                    </dt>
-                    <dd class="col-sm-9">
-                        @Html.DisplayFor(model => model.Weight) lbs
-                    </dd>
-                    <dt class="col-sm-3">
                         Height:
                     </dt>
                     <dd class="col-sm-9">
@@ -43,12 +37,6 @@
                     </dt>
                     <dd class="col-sm-9">
                         @Html.DisplayFor(model => model.Gender)
-                    </dd>
-                    <dt class="col-sm-3">
-                        Updated:
-                    </dt>
-                    <dd class="col-sm-9">
-                        @Html.DisplayFor(model => model.Timestamp)
                     </dd>
                 </dl>
         }
@@ -72,14 +60,16 @@
                 {
                     <dl class="row">
                         <dt class="col-sm-4">
-                            Body Mass Index:
+                            Weight:
+                        </dt>
+                        <dd class="col-sm-8">
+                            @ViewBag.WeightEntry.Weight lbs
+                        </dd>
+                        <dt class="col-sm-4">
+                            BMI:
                         </dt>
                         <dd class="col-sm-8">
                             @ViewBag.BMIService
-                        </dd>
-                    </dl>
-
-                    <dl class="row">
                         <dt class="col-sm-4">
                             BMI Category:
                         </dt>

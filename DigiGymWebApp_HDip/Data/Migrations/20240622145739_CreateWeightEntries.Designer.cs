@@ -4,6 +4,7 @@ using DigiGymWebApp_HDip.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigiGymWebApp_HDip.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240622145739_CreateWeightEntries")]
+    partial class CreateWeightEntries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,8 +262,8 @@ namespace DigiGymWebApp_HDip.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WeightID"));
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ProfileID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -270,7 +273,7 @@ namespace DigiGymWebApp_HDip.Data.Migrations
 
                     b.HasKey("WeightID");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("ProfileID");
 
                     b.ToTable("WeightEntries");
                 });
@@ -485,12 +488,13 @@ namespace DigiGymWebApp_HDip.Data.Migrations
 
             modelBuilder.Entity("DigiGymWebApp_HDip.Models.WeightEntry", b =>
                 {
-                    b.HasOne("DigiGymWebApp_HDip.Models.ApplicationUser", "User")
+                    b.HasOne("DigiGymWebApp_HDip.Models.UserProfile", "UserProfile")
                         .WithMany("WeightEntries")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProfileID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("DigiGymWebApp_HDip.Models.Workout", b =>
@@ -564,9 +568,12 @@ namespace DigiGymWebApp_HDip.Data.Migrations
 
                     b.Navigation("WaterEntries");
 
-                    b.Navigation("WeightEntries");
-
                     b.Navigation("Workouts");
+                });
+
+            modelBuilder.Entity("DigiGymWebApp_HDip.Models.UserProfile", b =>
+                {
+                    b.Navigation("WeightEntries");
                 });
 #pragma warning restore 612, 618
         }

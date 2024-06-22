@@ -20,19 +20,23 @@ namespace DigiGymWebApp_HDip.Services
             // get latest profile entry, order by timestamp
             var profileEntry = await _context.ProfileEntries
                                 .Where(p => p.Id == userId)
-                                .OrderByDescending(p => p.Timestamp)
                                 .FirstOrDefaultAsync();
 
-            // store weight and height values
-            var weight = profileEntry.Weight;
             var height = profileEntry.Height;
+
+            var weightEntry = await _context.WeightEntries
+                                .Where(p => p.Id == userId)
+                                .OrderByDescending(t => t.Timestamp)
+                                .FirstOrDefaultAsync();
+
+            // store weight values
+            var weight = weightEntry.Weight;
 
             // convert lbs to kilograms
             double pounds2kilos = weight / 2.205;
 
             // formula: [weight (kg) / height (cm) / height (cm)] x 10,000
-            return Math.Round(pounds2kilos / height / height * 10000, 1);
-
+            return Math.Round(pounds2kilos / height / height* 10000, 1);
         }
     }
 }

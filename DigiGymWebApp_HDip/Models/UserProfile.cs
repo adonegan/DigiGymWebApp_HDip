@@ -14,18 +14,11 @@ namespace DigiGymWebApp_HDip.Models
         public int ProfileID { get; set; }
 
         [Required]
-        [DisplayName("Weight (in lbs)")]
-        [Range(70, double.MaxValue, ErrorMessage = "Must be above 70 lbs")]
-        public double Weight { get; set; }
-
-        [Required]
         [DisplayName("Height (in meters)")]
         [Range(1.2, double.MaxValue, ErrorMessage = "Must be above 1.2 meters!")]
         public double Height { get; set; }
 
         public GenderTypes Gender { get; set; }
-
-        public DateTime Timestamp { get; set; } = DateTime.Now;
 
         public string Id { get; set; }
 
