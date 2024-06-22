@@ -17,13 +17,15 @@ namespace DigiGymWebApp_HDip.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole>_roleManager;
         private readonly BMIService _bmiService;
+        private readonly BMICategory _bmiCategory;
 
-        public ClientController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, BMIService bmiService)
+        public ClientController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, BMIService bmiService, BMICategory bmiCategory)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _bmiService = bmiService;
+            _bmiCategory = bmiCategory;
             _context.Database.EnsureCreated();
         }
 
@@ -115,6 +117,9 @@ namespace DigiGymWebApp_HDip.Controllers
             // make BMI value available
             var bmiService = await _bmiService.GetBMI(date, userId);
             ViewBag.BMIService = bmiService;
+
+            var bmiCategory = await _bmiCategory.GetBMICategory(bmiService);
+            ViewBag.BMICategory = bmiCategory;
 
             return View(profileEntry);
         }
