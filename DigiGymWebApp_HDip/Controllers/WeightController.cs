@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
@@ -60,6 +61,17 @@ namespace DigiGymWebApp_HDip.Controllers
         public async Task<IActionResult> Confirm(WeightEntry weightEntry)
         {
             return View(weightEntry);
+        }
+
+
+        public async Task<IActionResult> Chart()
+        {
+            var userId = _userManager.GetUserId(User);
+            var allWeight = await _context.WeightEntries
+                                .OrderBy(w => w.Timestamp)
+                                .Where(x => x.Id == userId)
+                                .ToListAsync();
+            return View(allWeight);
         }
 
     }

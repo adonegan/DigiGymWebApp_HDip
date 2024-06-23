@@ -1,0 +1,76 @@
+﻿@model IEnumerable<DigiGymWebApp_HDip.Models.WeightEntry>
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Chart";
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Weight Chart</title>
+        <!-- Chart.js CDN and date adapter -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    </head>
+    <body>
+        <div>
+            <h2>Weight Chart</h2>
+            <canvas id="weightChart" width="400" height="200"></canvas>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+
+                // store html element
+                var ctx = document.getElementById('weightChart').getContext('2d');
+
+                // get weight and timestamp data
+                var weightData = @Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Weight)));
+                var dateData = @Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Timestamp.ToString("yyyy-MM-dd"))));
+
+                // convert dateData (strings) to Date objects for proper time scale, Chart.js functionality
+                var dates = dateData.map(date => new Date(date));
+
+                // create min and max points for x and y axis
+                var maxWeight = Math.max(...weightData);
+                var yAxisMax = maxWeight + 10;
+
+                var minWeight = Math.min(...weightData);
+                var yAxisMin = minWeight - 10;
+
+                // initialise chart
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Weight',
+                            data: weightData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'month',
+                                    tooltipFormat: 'MMM YYYY'
+                                }
+                            },
+                            y: {
+                                beginAtZero: false,
+                                min: yAxisMin,
+                                max: yAxisMax
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
