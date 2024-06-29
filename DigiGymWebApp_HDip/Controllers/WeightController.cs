@@ -26,8 +26,10 @@ namespace DigiGymWebApp_HDip.Controllers
 
         public async Task<IActionResult> WeightEntries()
         {
+            var userId = _userManager.GetUserId(User);
             var weightEntries = await _context.WeightEntries
                                               .OrderBy(w => w.Timestamp)
+                                              .Where(we => we.Id == userId)
                                               .ToListAsync();
             return View(weightEntries);
         }
