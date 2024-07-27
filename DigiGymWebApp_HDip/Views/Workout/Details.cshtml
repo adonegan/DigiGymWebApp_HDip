@@ -1,0 +1,76 @@
+﻿@model DigiGymWebApp_HDip.Models.Workout
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Workout</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.WorkoutType)
+        </dt>
+        <dd class = "col-sm-10" id="workoutType">
+            @Html.DisplayFor(model => model.WorkoutType)
+        </dd>
+        <dt class="col-sm-2" id="otherInfoLabel" style="display:none;">
+            @Html.DisplayNameFor(model => model.OtherInfo)
+        </dt>
+        <dd class="col-sm-10" id="otherInfoValue" style="display:none;">
+            @Html.DisplayFor(model => model.OtherInfo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EffortLevel)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EffortLevel)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.WorkoutID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var workoutType = document.getElementById("workoutType");
+        // manage label and value fields separately
+        var otherInfoLabel = document.getElementById("otherInfoLabel");
+        var otherInfoValue = document.getElementById("otherInfoValue");
+
+        function toggleInfo() {
+            // <dd> has no value attribute, use innerText instead
+            if (workoutType.innerText === "Other") {
+                otherInfoLabel.style.display = "block";
+                otherInfoValue.style.display = "block"
+            } else {
+                otherInfo.style.display = "none";
+                otherInfo.style.display = "none";
+            }
+        }
+
+        toggleInfo();
+    });
+</script>
