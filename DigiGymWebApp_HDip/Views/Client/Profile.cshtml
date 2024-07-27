@@ -4,41 +4,45 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>@Model.User.FirstName's Profile</h1>
+<h1 class="text-center">Hello @Model.User.FirstName!</h1>
+<p class="text-center">Welcome to DigiGym, your one stop shop for logging and tracking your fitness goals from the comfort of your own house.</p>
 
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6">
-            <hr />
-
+    <div class="row pre-footer">
+        <div class="col-sm-6 stats-box">
+            @* <hr /> *@
+            <h3 class="text-center">Static stats!</h3>
+            <p class="text-center">These stats don't change much, but feel free to edit where you see fit.</p>
             @if (Model != null)
             {
-                <dl class="row">
-                    <dt class="col-sm-3">
+                <dl class="row text-center">
+                    <dt class="col-sm-6 text-lg-end">
                         Name:
                     </dt>
-                    <dd class="col-sm-9">
+                    <dd class="col-sm-6 text-lg-start">
                         @Model.User.FirstName @Model.User.LastName
                     </dd>
-                    <dt class="col-sm-3">
+                    <dt class="col-sm-6 text-lg-end">
                         DOB:
                     </dt>
-                    <dd class="col-sm-9">
+                    <dd class="col-sm-6 text-lg-start">
                         @Model.User.DateOfBirth.ToString("dd-MM-yyyy")
                     </dd>
-                    <dt class="col-sm-3">
+                    <dt class="col-sm-6 text-lg-end">
                         Height:
                     </dt>
-                    <dd class="col-sm-9">
+                    <dd class="col-sm-6 text-lg-start">
                         @Html.DisplayFor(model => model.Height) cm
                     </dd>
-                    <dt class="col-sm-3">
-                        Gender
+                    <dt class="col-sm-6 text-lg-end">
+                        Gender:
                     </dt>
-                    <dd class="col-sm-9">
+                    <dd class="col-sm-6 text-lg-start">
                         @Html.DisplayFor(model => model.Gender)
                     </dd>
+                    <img src="~/images/pexels-scales.jpg" alt="weighing scales and measuring tape" class="img-effects" />
                 </dl>
+                
         }
         else
         {
@@ -46,37 +50,50 @@
             <a asp-action="Create" asp-route-id="@Model?.ProfileID">Edit</a>
         }
         <div>
-            <a asp-action="Edit" asp-route-id="@Model?.ProfileID">Edit</a> 
+            <a asp-action="Edit" asp-route-id="@Model?.ProfileID">Update static stats >></a>
+
+               
 
         </div>
         </div>
 
 
-        <div class="col-sm-6">
+        <div class="col-sm-6 stats-box">
             <div class="main-stats">
-                <hr />
+                @* <hr /> *@
 
                 @if (Model != null)
                 {
-                    <dl class="row">
-                        <dt class="col-sm-4">
+                    <dl class="row text-center">
+                        <img src="~/images/pexels-girl-chart.jpg" alt="girl standing on bar chart graphic" class="img-effects" />
+
+                        
+                        <h3 class="text-center pt-5">Dynamic stats!</h3>
+                        <p>With effort, resilience and persistence, you can have an impact here.</p>
+
+                        <dt class="col-sm-6 text-lg-end">
                             Weight:
                         </dt>
-                        <dd class="col-sm-8">
+                        <dd class="col-sm-6 text-lg-start">
                             @ViewBag.WeightEntry.Weight lbs
                         </dd>
-                        <dt class="col-sm-4">
+                        <dt class="col-sm-6 text-lg-end">
                             BMI:
                         </dt>
-                        <dd class="col-sm-8">
+                        <dd class="col-sm-6 text-lg-start">
                             @ViewBag.BMIService
-                        <dt class="col-sm-4">
+                        <dt class="col-sm-6 text-lg-end">
                             BMI Category:
                         </dt>
-                        <dd class="col-sm-8">
+                        <dd class="col-sm-6 text-lg-start">
                             @ViewBag.BMICategory
                         </dd>
+
+
                     </dl>
+                    <div>
+                        <a asp-controller="Weight" asp-action="Chart">See progress chart >></a>
+                    </div>
                 }
                 else
                 {

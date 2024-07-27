@@ -43,3 +43,18 @@ body {
 .pre-footer {
     margin-bottom: 100px;
 }
+
+.stats-box {
+    border-top: dashed rgb(182, 244, 146) 2px;
+    /*padding: 20px 40px 20px 40px;*/
+    padding-top: 20px;
+    padding-right: 60px;
+}
+
+.img-effects {
+    margin-bottom: 5px;
+    border-radius: 50%;
+    border: dashed rgb(182, 244, 146) 2px;
+    filter: grayscale(55%);
+}
+

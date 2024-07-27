@@ -19,10 +19,6 @@ namespace DigiGymWebApp_HDip.Models
         public int WorkoutID { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string Title { get; set; }
-
-        [Required]
         [DisplayName("Workout Type")]
         public WorkoutTypes WorkoutType { get; set; }
 
@@ -38,6 +34,11 @@ namespace DigiGymWebApp_HDip.Models
         [DisplayName("Effort Level")]
         public EffortLevels EffortLevel { get; set; }
 
+        [DisplayName("Workout Type - Other")]
+        public string OtherInfo { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; } = DateTime.Now;
 
         //Foreign key
         public string Id { get; set; }
