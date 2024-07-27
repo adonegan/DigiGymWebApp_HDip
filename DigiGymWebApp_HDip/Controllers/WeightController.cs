@@ -76,5 +76,21 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(allWeight);
         }
 
+
+
+        
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var weightEntry = await _context.WeightEntries
+                                          .Where(f => f.WeightID == id && f.Id == userId)
+                                          .FirstOrDefaultAsync();
+
+            _context.Remove(weightEntry);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("WeightEntries");
+        }
+
     }
 }
