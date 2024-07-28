@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Food>
+@using System.Text.Json
 
 @{
     var breakfast = Model.Where(b => b.MealType == MealTypes.Breakfast).ToList();
@@ -10,151 +11,168 @@
     ViewBag.Title = "Food Details";
 }
 
-<h2 class="calcount">Calories today: @ViewBag.TotalCalories</h2>
-<h3>Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h3>
+<div class="container">
+    <div class="row pre-footer">
+        <h2 class="text-center">Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h2>
+        <h3 class="calcount text-center food-stats-box pb-3">Calories today: @ViewBag.TotalCalories</h3>
 
+        <div class="col-sm-6">
 
-@if (breakfast.Any())
-{
-    <h4>Breakfast</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in breakfast)
+            @if (breakfast.Any())
             {
-                <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
-                    </td>
-                        
-                </tr>
+                <h4 class="text-center pt-2">Breakfast</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Calories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in breakfast)
+                        {
+                            <tr>
+                                <td>@item.FoodName</td>
+                                <td>@item.Calories</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                                </td>
 
+                            </tr>
+
+                        }
+                    </tbody>
+
+                </table>
             }
-        </tbody>
-
-    </table>
-}
-else
-{
-    <h4>Breakfast</h4>
-    <p>No entries. <a asp-action="Create"> Add</a></p>
-}
-
-
-@if (lunch.Any())
-{
-    <h4>Lunch</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in lunch)
+            else
             {
-                <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
-                    </td>
-
-                </tr>
-
+                <h4 class="text-center pt-2">Breakfast</h4>
+                <p>No entries. <a asp-action="Create"> Add</a></p>
             }
-        </tbody>
 
-    </table>
-}
-else
-{
-    <h4>Lunch</h4>
-    <p>No entries. <a asp-action="Create"> Add</a></p>
-}
 
-@if (dinner.Any())
-{
-    <h4>Dinner</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in dinner)
+            @if (lunch.Any())
             {
-                <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
-                    </td>
+                <h4 class="text-center">Lunch</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Calories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in lunch)
+                        {
+                            <tr>
+                                <td>@item.FoodName</td>
+                                <td>@item.Calories</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                                </td>
 
-                </tr>
+                            </tr>
 
+                        }
+                    </tbody>
+
+                </table>
             }
-        </tbody>
-
-    </table>
-}
-else
-{
-    <h4>Dinner</h4>
-    <p>No entries. <a asp-action="Create">Add</a></p>
-}
-
-@if (snack.Any())
-{
-    <h4>Snack</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in snack)
+            else
             {
-                <tr>
-                    <td>@item.FoodName</td>
-                    <td>@item.Calories</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
-                    </td>
-
-                </tr>
-
+                <h4 class="text-center">Lunch</h4>
+                <p>No entries. <a asp-action="Create"> Add</a></p>
             }
-        </tbody>
 
-    </table>
-}
-else
-{
-    <h4>Snack</h4>
-    <p>No entries. <a asp-action="Create"> Add</a></p>
-}
+            @if (dinner.Any())
+            {
+                <h4 class="text-center">Dinner</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Calories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in dinner)
+                        {
+                            <tr>
+                                <td>@item.FoodName</td>
+                                <td>@item.Calories</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <h4 class="text-center">Dinner</h4>
+                <p>No entries. <a asp-action="Create">Add</a></p>
+            }
+
+            @if (snack.Any())
+            {
+                <h4 class="text-center">Snack</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Calories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in snack)
+                        {
+                            <tr>
+                                <td>@item.FoodName</td>
+                                <td>@item.Calories</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.FoodID">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.FoodID">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.FoodID"> Delete </a>
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <h4 class="text-center">Snack</h4>
+                <p>No entries. <a asp-action="Create"> Add</a></p>
+            }
+            </<div>
+            </div>
+            <div class="col-sm-6">
+                <div class="pre-footer">
+                    <h2 class="text-center">Macro Pie</h2>
+                    <canvas id="macroPie" width="400" height="200"></canvas>
+
+                    <!-- Hidden elements to hold the JSON data -->
+                    <div id="proteinData" style="display: none;">@ViewBag.TotalProtein</div>
+                    <div id="carbData" style="display: none;">@ViewBag.TotalCarbs</div>
+                    <div id="fatData" style="display: none;">@ViewBag.TotalFat</div>
+                </div>
+            </div>
+        </div>

@@ -48,6 +48,16 @@ namespace DigiGymWebApp_HDip.Controllers
             var totalCalories = await _calorieCounterService.GetTotalCalories(date, userId);
             ViewBag.TotalCalories = totalCalories;
 
+
+            // get macro data for pie chart
+            var totalProtein = foodEntry.Sum(m => m.Protein);
+            var totalCarbs = foodEntry.Sum(m => m.Carbohydrates);
+            var totalFat = foodEntry.Sum(m => m.Fat);
+
+            ViewBag.TotalProtein = totalProtein;
+            ViewBag.TotalCarbs = totalCarbs;
+            ViewBag.TotalFat = totalFat;
+
             return View(foodEntry);
         }
 

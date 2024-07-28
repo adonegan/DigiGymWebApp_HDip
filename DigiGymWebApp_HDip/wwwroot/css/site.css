@@ -51,6 +51,11 @@ body {
     padding-right: 60px;
 }
 
+
+.food-stats-box {
+    border-bottom: dashed rgb(182, 244, 146) 2px;
+}
+
 .img-effects {
     margin-bottom: 5px;
     border-radius: 50%;
