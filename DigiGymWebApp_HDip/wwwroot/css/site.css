@@ -17,18 +17,29 @@ nav {
     color: black;
 }
 
-.card-header {
+/*.card-header {
     background-color: white;
     transition: 0.5s;
 }
 
     .card-header:hover {
         background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
-    }
+    }*/
+
+
+.card:hover {
+    border: 2px solid #ffffff;
+}
+
+.card-header {
+    border-bottom: white 2px solid;
+}
+
 
 html {
     position: relative;
     min-height: 100%;
+    background-color: #212529;
 }
 
 body {
@@ -38,7 +49,6 @@ body {
 .container {
     align-content: center;
 }
-
 
 .pre-footer {
     margin-bottom: 100px;
@@ -61,5 +71,25 @@ body {
     border-radius: 50%;
     border: dashed rgb(182, 244, 146) 2px;
     filter: grayscale(55%);
+}
+
+.main-image {
+    background-image: url('/images/pexels-main.jpg');
+    background-color: #cccccc;
+    width: auto;
+    height: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.title {
+    margin-top: 100px;
+}
+
+.intro-col {
+    background-color: black;
+    opacity: 0.8; 
+    padding: 0px 10px 10px 10px;
 }
 
