@@ -4,19 +4,23 @@
     ViewBag.Title = "Food Diary";
 }
 
-<h2>Food Diary</h2>
+<div class="container">
+    <div class="row">
+        <h2>Food Diary</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
 
-<ul>
-    @foreach (var date in Model)
-    {
-        <li>
-            <a href="@Url.Action("Dates", new { date = date.ToString("yyyy-MM-dd") })">
-                @date.ToString("d")
-            </a>
-        </li>
-    }
-</ul>
+        <ul>
+            @foreach (var date in Model)
+            {
+                <li>
+                    <a href="@Url.Action("Dates", new { date = date.ToString("yyyy-MM-dd") })">
+                        @date.ToString("d")
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
