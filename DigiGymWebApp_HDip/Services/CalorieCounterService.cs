@@ -5,7 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Services
 {
-    public class CalorieCounterService
+    // implement interface instead of concrete class for testing purposes
+    // prevent parameterless constructor error during testing
+    public interface ICalorieCounterService
+    {
+        Task<int> GetTotalCalories(DateTime date, string userId);
+    }
+
+    public class CalorieCounterService : ICalorieCounterService
     {
         private readonly ApplicationDbContext _context;
 

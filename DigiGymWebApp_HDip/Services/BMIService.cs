@@ -5,7 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Services
 {
-    public class BMIService
+    public interface IBMIService
+    {
+        Task<double> GetBMI(DateTime date, string userId);
+    }
+
+    public class BMIService : IBMIService
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;

@@ -5,7 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Services
 {
-    public class BMICategory
+    public interface IBMICategory
+    {
+        Task<string> GetBMICategory(double BMI);
+    }
+
+    public class BMICategory : IBMICategory
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
