@@ -16,9 +16,9 @@ namespace DigiGymWebApp_HDip.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly CalorieCounterService _calorieCounterService;
+        private readonly ICalorieCounterService  _calorieCounterService;
 
-        public FoodController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, CalorieCounterService calorieCounterService)
+        public FoodController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ICalorieCounterService  calorieCounterService)
         {
             _context = context;
             _userManager = userManager;
@@ -68,7 +68,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
             ViewBag.MealType = selectListMealType;
 
-            return View();
+            return View("Create");
         }
 
         [HttpPost]
@@ -133,7 +133,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 return RedirectToAction("FoodDiary");
             }
-            return View();
+            return View(foodEntry);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -142,6 +142,11 @@ namespace DigiGymWebApp_HDip.Controllers
             var foodEntry = await _context.FoodDiary
                                   .Where(f => f.FoodID == id && f.Id == userId)
                                   .FirstOrDefaultAsync();
+
+            if (foodEntry == null)
+            {
+                return NotFound();
+            }
 
             return View(foodEntry);
         }

@@ -16,10 +16,10 @@ namespace DigiGymWebApp_HDip.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole>_roleManager;
-        private readonly BMIService _bmiService;
-        private readonly BMICategory _bmiCategory;
+        private readonly IBMIService _bmiService;
+        private readonly IBMICategory _bmiCategory;
 
-        public ClientController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, BMIService bmiService, BMICategory bmiCategory)
+        public ClientController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IBMIService bmiService, IBMICategory bmiCategory)
         {
             _context = context;
             _userManager = userManager;
@@ -36,7 +36,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
             ViewBag.GenderType = selectListGenderType;
 
-            return View();
+            return View("Create");
         }
 
         [HttpPost]
@@ -91,6 +91,11 @@ namespace DigiGymWebApp_HDip.Controllers
                                                   .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
+                if (existingProfileEntry == null)
+                {
+                    return NotFound();
+                }
+
                 profileEntry.Id = existingProfileEntry.Id;
 
                 _context.Update(profileEntry);
@@ -98,7 +103,13 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 return RedirectToAction("Profile");
             }
-            return View();
+
+            // If ModelState not valid, handle ViewBag properties
+            var enumGenderTypeValues = Enum.GetValues(typeof(GenderTypes));
+            var selectListGenderType = new SelectList(enumGenderTypeValues, profileEntry.Gender);
+            ViewBag.Gender = selectListGenderType;
+
+            return View(profileEntry);
         }
 
 

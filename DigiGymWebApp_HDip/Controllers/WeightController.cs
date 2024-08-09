@@ -37,7 +37,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
         public async Task<IActionResult> Create()
         {
-            return View();
+            return View("Create");
         }
 
 
