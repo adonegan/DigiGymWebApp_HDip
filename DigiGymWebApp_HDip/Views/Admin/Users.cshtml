@@ -1,33 +1,26 @@
 ﻿@model List<ApplicationUser>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User List</title>
-</head>
-<body>
-    <h1>User List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>FN</th>
-                <th>LN</th>
-                <th>Email</th>
-                <th>UserType</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
+<div class="container">
+    <div class="row pre-footer">
+        <h1 class="dashed py-3 text-center">User List</h1>
+        <table>
+            <thead>
                 <tr>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Email</td>
-                    <td>@user.UserType</td>
-                    <td><a asp-action="ManageUser" asp-route-id="@user.Id">Manage</a></td>
+                    <th>Name</th>
+                    <th>User Type</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.UserType</td>
+                        <td><a asp-action="ManageUser" asp-route-id="@user.Id">Manage</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

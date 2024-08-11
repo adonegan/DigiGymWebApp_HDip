@@ -1,41 +1,40 @@
 ﻿@model List<ApplicationUser>
 
-<h1>Trainer List</h1>
+<div class="container">
+    <div class="row pre-footer">
 
-@{
-    bool approvedTrainers = Model.Any(u => u.ApprovalStatus == ApprovalStatuses.Approved && u.UserType == UserTypes.Trainer);
-}
+        <h1 class="dashed text-center py-3">Trainer List</h1>
 
-@if (approvedTrainers)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Created Date</th>
-                <th>User Type</th>
-                <th>Approved?</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td>@user.Email</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
-                    <td>@user.UserType</td>
-                    <td>@user.ApprovalStatus</td>
-                    <td><a asp-action="ManageUser" asp-route-id="@user.Id">Manage</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No Approved Trainers.</p>
-}
+        @{
+            bool approvedTrainers = Model.Any(u => u.ApprovalStatus == ApprovalStatuses.Approved && u.UserType == UserTypes.Trainer);
+        }
+
+        @if (approvedTrainers)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Approved?</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.ApprovalStatus</td>
+                            <td><a asp-action="ManageUser" asp-route-id="@user.Id">Manage</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-center">No Approved Trainers.</p>
+        }
+
+    </div>
+</div>

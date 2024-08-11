@@ -1,13 +1,12 @@
 ﻿@model DigiGymWebApp_HDip.Models.WeightEntry
 
 @{
-    ViewData["Title"] = "Confirm";
+    ViewData["Title"] = "Details";
 }
 
-<div class="container">
+<div class="container text-center">
     <div class="row">
-
-        <h1 class="text-center dashed py-3">Confirmation</h1>
+        <h1 class="dashed py-3 text-center">Details</h1>
 
         <div>
             <dl class="row text-center">
@@ -24,14 +23,10 @@
                     @Html.DisplayFor(model => model.Timestamp)
                 </dd>
             </dl>
-            <div class="text-center">
+            <div>
                 <a asp-action="Edit" asp-route-id="@Model?.WeightID">Edit</a> |
-                <a asp-action="Index">Back to List </a>
-            </div>
-            <div class="text-center">
-                <a asp-action="Chart">See Progress chart</a>
+                <a asp-action="WeightEntries">Back to List</a>
             </div>
         </div>
-
     </div>
 </div>

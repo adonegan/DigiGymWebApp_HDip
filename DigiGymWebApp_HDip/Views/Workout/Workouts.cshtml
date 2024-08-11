@@ -4,18 +4,22 @@
     ViewData["Title"] = "Workouts";
 }
 
-<h1>Workouts</h1>
+<div class="container">
+    <div class="row pre-footer text-center">
+        <h1 class="dashed pb-3">Workouts</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<ul>
-    @foreach (var date in Model)
-    {
-        <li>
-            <a href="@Url.Action("Dates", new { date = date.ToString("yyyy-MM-dd") })">
-                @date.ToString("d")
-            </a>
-        </li>
-    }
-</ul>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <ul>
+            @foreach (var date in Model)
+            {
+                <li>
+                    <a href="@Url.Action("Dates", new { date = date.ToString("yyyy-MM-dd") })">
+                        @date.ToString("d")
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

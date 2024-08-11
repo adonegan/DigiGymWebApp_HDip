@@ -5,11 +5,18 @@
     ViewData["Title"] = "Chart";
 }
 
-<div class="pre-footer">
-    <h2>Weight Chart</h2>
-    <canvas id="weightChart" width="400" height="200"></canvas>
+<div class="container">
+    <div class="row">
+        <div class="pre-footer chart-container">
+            <h2 class="text-center mt-3">Weight Chart</h2>
+            <p class="text-center dashed pb-3">
+                See how your weight progresses over time.
+            </p>
+            <canvas id="weightChart"></canvas>
 
-    <!-- Hidden elements to hold the JSON data -->
-    <div id="weightData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Weight)))</div>
-    <div id="dateData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Timestamp.ToString("yyyy-MM-dd"))))</div>
+            <!-- Hidden elements to hold the JSON data -->
+            <div id="weightData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Weight)))</div>
+            <div id="dateData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Timestamp.ToString("yyyy-MM-dd"))))</div>
+        </div>
+    </div>
 </div>

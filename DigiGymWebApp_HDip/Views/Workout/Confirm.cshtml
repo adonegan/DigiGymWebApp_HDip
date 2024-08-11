@@ -4,51 +4,52 @@
     ViewData["Title"] = "Confirm";
 }
 
-<h1>Confirm</h1>
-
-<div>
-    <h4>Workout</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.WorkoutType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.WorkoutType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OtherInfo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OtherInfo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EffortLevel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EffortLevel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.WorkoutID">Edit</a> |
-    <a asp-action="Workouts">Back to List</a>
+<div class="container">
+    <div class="row pre-footer">
+        <h1 class="dashed text-center py-3">Confirmation</h1>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.WorkoutType)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.WorkoutType)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.OtherInfo)
+                </dt>
+                <dd class="col-sm-6 text-lg-start0">
+                    @Html.DisplayFor(model => model.OtherInfo)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.StartTime)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.StartTime)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.EndTime)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.EndTime)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.EffortLevel)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.EffortLevel)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.Date)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+            </dl>
+            <div class="text-center">
+                <a asp-action="Edit" asp-route-id="@Model?.WorkoutID">Edit</a> |
+                <a asp-action="Workouts">Back to List</a>
+            </di>
+        </div>
+    </div>
 </div>

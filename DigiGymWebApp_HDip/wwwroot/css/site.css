@@ -17,15 +17,6 @@ nav {
     color: black;
 }
 
-/*.card-header {
-    background-color: white;
-    transition: 0.5s;
-}
-
-    .card-header:hover {
-        background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
-    }*/
-
 
 .card:hover {
     border: 2px solid #ffffff;
@@ -39,7 +30,6 @@ nav {
 html {
     position: relative;
     min-height: 100%;
-    background-color: #212529;
 }
 
 body {

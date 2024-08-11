@@ -4,41 +4,46 @@
     ViewBag.Title = "Workout Details";
 }
 
-<h3>Workout Details for @Model.FirstOrDefault()?.Date.ToString("d")</h3>
+<div class="container">
+    <div class="row pre-footer text-center">
+
+        <h3 class="text-center dashed py-3">Workout Details for @Model.FirstOrDefault()?.Date.ToString("d")</h3>
 
 
-@if (Model.Any())
-{
-    <h4>Workout</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Start Time:</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.WorkoutType</td>
-                    <td>@item.StartTime</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.WorkoutID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.WorkoutID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.WorkoutID"> Delete </a>
-                    </td>
+        @if (Model.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Start Time:</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.WorkoutType</td>
+                            <td>@item.StartTime</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.WorkoutID">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.WorkoutID">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.WorkoutID"> Delete </a>
+                            </td>
                         
-                </tr>
+                        </tr>
 
-            }
-        </tbody>
+                    }
+                </tbody>
 
-    </table>
-}
-else
-{
-    <h4>Workout</h4>
-    <p>No entries. <a asp-action="Create"> Add</a></p>
-}
+            </table>
+        }
+        else
+        {
+            <h4>Workout</h4>
+            <p>No entries. <a asp-action="Create"> Add</a></p>
+        }
+
+    </div>
+</div>

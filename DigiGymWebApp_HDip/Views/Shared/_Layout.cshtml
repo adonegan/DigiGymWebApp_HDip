@@ -25,7 +25,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    @* <link rel="stylesheet" href="~/lib/bootstrap /dist/css/bootstrap.min.css" /> *@
+    <link rel="stylesheet" href="~/lib/bootstrap /dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DigiGymWebApp_HDip.styles.css" asp-append-version="true" />
@@ -40,7 +40,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow">
 
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DigiGym</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -53,29 +53,36 @@
                         @if (userRole == "Trainer")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                         }
                         else if (userRole == "Client")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Client" asp-action="Profile">Profile</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Profile">Profile</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Food" asp-action="FoodDiary">Food</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Food" asp-action="FoodDiary">Food</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Workout" asp-action="Workouts">Workout</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Workout" asp-action="Workouts">Workout</a>
                             </li>
 
                         }
                         else if (userRole == "Admin")
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin Center
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Admins">Admins List</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Trainers">Trainers List</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Clients">Clients List</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Users">All Users List</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="PendingApproval">Pending Approval</a>
+                                </div>
                             </li>
                         }
                         else
@@ -96,17 +103,18 @@
 
 
     <footer class="border-top footer">
-        <div class="container">
+        <div class="container text-light">
             &copy; 2024 - DigiGym
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    @* needed for mobile hamburger *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-b9j6l/1G3Y6FLU4PZ6cZLRGnb8wO2Hl6HjzO2xj6w6W2nHbG1I6O4W3e1pH0WZtx" crossorigin="anonymous"></script>
 
     <script src="~/js/chart.js" asp-append-version="true"></script>
     <script src="~/js/pie.js" asp-append-version="true"></script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

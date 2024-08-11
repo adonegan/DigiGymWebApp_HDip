@@ -6,13 +6,13 @@
 
 <div class="container">
     <div class="row">
-        <h2>Food Diary</h2>
+        <h2 class="text-center dashed py-3">Food Diary</h2>
 
-        <p>
+        <p class="text-center">
             <a asp-action="Create">Create New</a>
         </p>
 
-        <ul>
+        <ul class="text-center">
             @foreach (var date in Model)
             {
                 <li>

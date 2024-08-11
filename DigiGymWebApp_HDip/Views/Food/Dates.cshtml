@@ -13,14 +13,14 @@
 
 <div class="container">
     <div class="row pre-footer">
-        <h2 class="text-center">Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h2>
-        <h3 class="calcount text-center food-stats-box pb-3">Calories today: @ViewBag.TotalCalories</h3>
+        <h2 class="text-center mt-3">Food Details for @Model.FirstOrDefault()?.CreatedAt.ToString("d")</h2>
+        <h3 class="calcount text-center dashed pb-3">Calories today: @ViewBag.TotalCalories</h3>
 
         <div class="col-sm-6">
-
             @if (breakfast.Any())
             {
-                <h4 class="text-center pt-2">Breakfast</h4>
+                
+                <h4 class="text-center mealtime-color py-2">Breakfast</h4>
                 <table class="table">
                     <thead>
                         <tr>
@@ -47,17 +47,18 @@
                     </tbody>
 
                 </table>
+                
             }
             else
             {
-                <h4 class="text-center pt-2">Breakfast</h4>
-                <p>No entries. <a asp-action="Create"> Add</a></p>
+                <h4 class="text-center mealtime-color py-2">Breakfast</h4>
+                <p class="text-center">No entries. <a asp-action="Create"> Add</a></p>
             }
 
 
             @if (lunch.Any())
             {
-                <h4 class="text-center">Lunch</h4>
+                <h4 class="text-center mealtime-color py-2">Lunch</h4>
                 <table class="table">
                     <thead>
                         <tr>
@@ -87,13 +88,14 @@
             }
             else
             {
-                <h4 class="text-center">Lunch</h4>
-                <p>No entries. <a asp-action="Create"> Add</a></p>
+                <h4 class="text-center mealtime-color py-2">Lunch</h4>
+                <p class="text-center">No entries. <a asp-action="Create"> Add</a></p>
             }
+
 
             @if (dinner.Any())
             {
-                <h4 class="text-center">Dinner</h4>
+                <h4 class="text-center mealtime-color py-2">Dinner</h4>
                 <table class="table">
                     <thead>
                         <tr>
@@ -123,13 +125,14 @@
             }
             else
             {
-                <h4 class="text-center">Dinner</h4>
-                <p>No entries. <a asp-action="Create">Add</a></p>
+                <h4 class="text-center mealtime-color py-2">Dinner</h4>
+                <p class="text-center">No entries. <a asp-action="Create">Add</a></p>
             }
+
 
             @if (snack.Any())
             {
-                <h4 class="text-center">Snack</h4>
+                <h4 class="text-center mealtime-color py-2">Snack</h4>
                 <table class="table">
                     <thead>
                         <tr>
@@ -159,11 +162,12 @@
             }
             else
             {
-                <h4 class="text-center">Snack</h4>
-                <p>No entries. <a asp-action="Create"> Add</a></p>
+                <h4 class="text-center mealtime-color py-2">Snack</h4>
+                <p class="text-center">No entries. <a asp-action="Create"> Add</a></p>
             }
-            </<div>
             </div>
+
+
             <div class="col-sm-6">
                 <div class="pre-footer">
                     <h2 class="text-center">Macro Pie</h2>
@@ -176,3 +180,5 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
