@@ -13,6 +13,9 @@ namespace DigiGymWebApp_HDip.Data
         public DbSet<Water> WaterEntries { get; set; }
         public DbSet<UserProfile> ProfileEntries { get; set; }
         public DbSet<WeightEntry> WeightEntries { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -59,6 +62,42 @@ namespace DigiGymWebApp_HDip.Data
                 .WithMany(w => w.WeightEntries)
                 .HasForeignKey(f => f.Id)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Conversation>()
+                .HasMany(c => c.Messages)
+                .WithOne(m => m.Conversation)
+                .HasForeignKey(m => m.ConversationID);
+
+            builder.Entity<Conversation>()
+                .HasOne(c => c.Client)
+                .WithMany(u => u.ClientConversations)
+                .HasForeignKey(c => c.ClientID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Conversation>()
+                .HasOne(t => t.Trainer)
+                .WithMany(u => u.TrainerConversations)
+                .HasForeignKey(t => t.TrainerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                .HasOne(s => s.Sender)
+                .WithMany(u => u.SentMessages)
+                .HasForeignKey(s => s.SenderID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                .HasOne(r => r.Receiver)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(r => r.ReceiverID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Notification>()
+                .HasOne(u => u.User)
+                .WithMany(u => u.Notifications)
+                .HasForeignKey(u => u.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

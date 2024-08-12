@@ -47,6 +47,13 @@ namespace DigiGymWebApp_HDip.Models
         public List<Water> WaterEntries { get; set; }
         public List<UserProfile> ProfileEntries { get; set; }
         public List<WeightEntry> WeightEntries { get; set; }
+
+        public List<Conversation> ClientConversations { get; set; }
+        public List<Conversation> TrainerConversations { get; set; }
+
+        public List<Message> SentMessages { get; set; }
+        public List<Message> ReceivedMessages { get; set; }
+        public List<Notification> Notifications { get; set; }
     }
 
 }

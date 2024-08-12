@@ -13,9 +13,14 @@ COLOURS
 /* https://gradients.shecodes.io/gradients/3 */
 footer,
 nav {
-    background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
-    color: black;
+    /*background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));*/
+    /*background: #4756ca;*/
+    /*background: #00262e;*/
+    /*background: #057780;*/
+    background: #345760;
+    /*color: black;*/
 }
+
 
 
 .card:hover {
@@ -45,16 +50,21 @@ body {
 }
 
 .stats-box {
-    border-top: dashed rgb(182, 244, 146) 2px;
-    /*padding: 20px 40px 20px 40px;*/
+    /*border-top: dashed rgb(182, 244, 146) 2px;*/
+    border-top: dashed #345760 2px;
     padding-top: 20px;
     padding-right: 60px;
 }
 
-
-.food-stats-box {
-    border-bottom: dashed rgb(182, 244, 146) 2px;
+.dashed {
+    border-bottom: dashed #345760 2px;
+    /*padding-top: 20px;*/
+/*    padding-right: 60px;*/
 }
+
+/*.food-stats-box {
+    border-bottom: dashed rgb(182, 244, 146) 2px;
+}*/
 
 .img-effects {
     margin-bottom: 5px;
@@ -83,3 +93,117 @@ body {
     padding: 0px 10px 10px 10px;
 }
 
+
+.card-holder {
+    padding-bottom: 100px;
+}
+
+/*li:hover {
+    background: #0fc9e7;
+}
+*/
+a.nav-link:hover {
+    background: #0fc9e7;
+}
+
+a.btn.btn-primary {
+    background: #345760;
+    color: white;
+    margin: 5px;
+}
+
+    a.btn.btn-primary:hover {
+        color: black;
+    }
+
+
+li {
+    list-style-type:none;
+}
+
+.form-control {
+    text-align: center;
+
+}
+
+.control-label {
+    color: #345760;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+table {
+    text-align: center;
+}
+
+/*.table-color {
+    background-color: pink;
+}*/
+
+.mealtime-color {
+    background-color: pink;
+}
+
+.btn.btn-primary {
+    background-color: #345760;
+}
+
+    .btn.btn-primary:hover {
+        background-color: #0fc9e7;
+        border: #0fc9e7
+    }
+
+/*.nav-link.text-light {
+    padding-left: 20px
+}*/
+
+
+.message-left {
+    text-align: left;
+    max-width: 60%;
+    margin-right: auto;
+}
+
+.message-right {
+    text-align: right;
+    max-width: 60%;
+    margin-left: auto;
+}
+
+/* https://mdigi.tools/lighten-color/#345760 */
+.bg-darker {
+    background-color: #548c9b;
+    color: black;
+    border-radius: 15px;
+}
+
+.bg-lighter {
+    background-color: #dce9ec;
+    color: black;
+    border-radius: 15px;
+}
+
+.message-left .bg-lighter {
+    border-top-left-radius: 0;
+}
+
+.message-right .bg-darker {
+    border-top-right-radius: 0;
+}
+
+.p-3 {
+    padding: 15px;
+}
+
+.mb-3 {
+    margin-bottom: 15px;
+}
+
+.message-container {
+    display: inline-block;
+    max-width: 80%; 
+    min-width: 100px; 
+    padding: 15px;
+    border-radius: 15px;
+    word-wrap: break-word; 
+}

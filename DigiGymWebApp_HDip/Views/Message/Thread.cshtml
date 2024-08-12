@@ -1,0 +1,54 @@
+﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Message>
+@{
+    ViewData["Title"] = "Thread";
+
+    // get user identity via email
+    var currentUserEmail = User.Identity.Name;
+}
+
+<div class="container">
+    <div class="row pre-footer">
+
+        <h1 class="text-center pt-3">Conversation Thread</h1>
+        <p class="text-center pb-3 dashed">See replies and add replies to thread below.</p>
+
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+        @foreach (var message in Model)
+        {
+            // check if sender is currently logged-in user
+            var isCurrentUser = message.Sender?.Email == currentUserEmail; 
+
+            // if current user is sender, set a css class that will display message on right side of screen
+            // display other users on the left
+            var messageAlignmentClass = isCurrentUser ? "message-right" : "message-left"; 
+
+            // if current user is sender, make their message appear dark background with white text
+            // display other users with lighter background and darker text
+            var cssClass = isCurrentUser ? "bg-darker text-white" : "bg-lighter"; //
+
+            <div class="@messageAlignmentClass">
+                <div class="timestamp">
+                <strong>
+                    @message.Timestamp.ToString("g")
+                </strong>
+                </div>
+                <div class="@cssClass message-container p-3 mb-3">
+                    <p><strong>From:</strong> @message.Sender?.UserName</p>
+                    <p>@message.Content</p>
+                </div>
+            </div>
+        }
+        </div>
+
+        <div class="text-center">
+            @* so important!!! Reply action, NOT Create action *@
+            <a asp-action="Reply" asp-route-id="@Model.FirstOrDefault()?.MessageID" class="btn btn-primary">Reply</a>
+        </div>
+
+        <div class="text-center py-3">
+            <a asp-action="Messages">Back to Messages</a>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>

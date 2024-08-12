@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Message>
+@{
+    ViewData["Title"] = "TrainerMessages";
+}
+
+@{
+    // same as ClientMessages.cshtml, which as more comments
+    int counter = 0;
+    int maxLength = 40;
+}
+
+<div class="container">
+    <div class="row pre-footer">
+
+        <h1 class="text-center pt-3">Your Conversations</h1>
+        <p class="text-center dashed pb-3">The client conversations you've responded to are listed below. Click 'View Conversation' to see updates.</p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Content</th>
+                    <th>Timestamp</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var message in Model)
+                {
+                    // if content length is greater than 40 characters, cut it off and add ellipsis, otherwise add the content
+                    var truncatedContent = message.Content.Length > maxLength
+                    ? message.Content.Substring(0, maxLength) + "..."
+                    : message.Content;
+
+                    <tr>
+                        <td>@(++counter)</td>
+                        <td>@truncatedContent</td>
+                        <td>@message.Timestamp.ToString("g")</td>
+                        <td><a asp-action="Thread" asp-route-conversationId="@message.ConversationID">View Conversation</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
