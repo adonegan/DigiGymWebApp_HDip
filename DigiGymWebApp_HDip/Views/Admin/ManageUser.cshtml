@@ -41,21 +41,43 @@
                 <dd class="col-sm-6 text-lg-start">
                     @Html.DisplayFor(model => model.UserType)
                 </dd>
-                <dt class="col-sm-6 text-lg-end">
-                    @Html.DisplayNameFor(model => model.ApprovalStatus)
-                </dt>
-                <dd class="col-sm-6 text-lg-start">
-                    @Html.DisplayFor(model => model.ApprovalStatus)
-                </dd>
+                @* Show approval only if Trainer *@
+                @{
+                    if (@Model.UserType == UserTypes.Trainer)
+                    {
+                        <dt class="col-sm-6 text-lg-end">
+                            @Html.DisplayNameFor(model => model.ApprovalStatus)
+                        </dt>
+                        <dd class="col-sm-6 text-lg-start">
+                            @Html.DisplayFor(model => model.ApprovalStatus)
+                        </dd>
+                    }
+                }
+
             </dl>
         </div>
-        <div class="text-center">
-            <a asp-action="ApproveTrainer" asp-route-id="@Model?.Id">Approve Trainer</a> |
-            <a asp-action="RejectTrainer" asp-route-id="@Model?.Id">Reject Trainer</a> 
-            <br />
-            <a asp-action="PendingApproval">Back to Pending List</a> |
-            <a asp-action="UpgradeToAdmin" asp-route-id="@Model?.Id">Upgrade to Admin</a>
-        </div>
 
+        @{
+            if (@Model.UserType == UserTypes.Client)
+            {
+                <div class="text-center">
+                    <a asp-action="Clients">Back to Client List</a>
+                </div>
+            } else if (@Model.UserType == UserTypes.Trainer)
+            {
+                <div class="text-center">
+                    <a asp-action="ApproveTrainer" asp-route-id="@Model?.Id">Approve Trainer</a> |
+                    <a asp-action="RejectTrainer" asp-route-id="@Model?.Id">Reject Trainer</a>
+                    <br />
+                    <a asp-action="PendingApproval">Go to Pending List</a> |
+                    <a asp-action="Trainers">Back to Trainers List</a>
+                </div>
+            } else if (@Model.UserType == UserTypes.Admin)
+            {
+                <div class="text-center">
+                    <a asp-action="Admins">Back to Admin List</a>
+                </div>
+            }
+        }
     </div>
 </div>
