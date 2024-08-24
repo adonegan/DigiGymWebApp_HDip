@@ -1,0 +1,37 @@
+﻿@model DigiGymWebApp_HDip.Models.Water
+
+@{
+    ViewData["Title"] = "Confirm";
+}
+
+<div class="container">
+    <div class="row">
+
+        <h1 class="text-center dashed py-3">Confirmation</h1>
+
+        <div>
+            <dl class="row text-center">
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.Amount)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.Amount)
+                </dd>
+                <dt class="col-sm-6 text-lg-end">
+                    @Html.DisplayNameFor(model => model.Timestamp)
+                </dt>
+                <dd class="col-sm-6 text-lg-start">
+                    @Html.DisplayFor(model => model.Timestamp)
+                </dd>
+            </dl>
+            <div class="text-center">
+                <a asp-action="Edit" asp-route-id="@Model?.WaterID">Edit</a> |
+                <a asp-action="WaterEntries">Back to List </a>
+            </div>
+            <div class="text-center">
+                <a asp-action="Chart">See Progress chart - change</a>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Water>
+
+@{
+    ViewData["Title"] = "WaterEntries";
+}
+
+<div class="container">
+    <div class="row">
+        <h1 class="dashed py-3 text-center">Your Water Entries</h1>
+
+        <p class="text-center">
+            <a asp-action="Create">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Timestamp)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Timestamp)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.WaterID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.WaterID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.WaterID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
