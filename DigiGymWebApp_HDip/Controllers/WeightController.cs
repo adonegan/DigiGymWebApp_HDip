@@ -77,7 +77,18 @@ namespace DigiGymWebApp_HDip.Controllers
         }
 
 
-
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var weightEntry = await _context.WeightEntries
+                                  .Where(w => w.WeightID == id && w.Id == userId)
+                                  .FirstOrDefaultAsync();
+            if (weightEntry == null)
+            {
+                return NotFound();
+            }
+            return View(weightEntry);
+        }
         
         public async Task<IActionResult> Delete(int id)
         {
@@ -90,6 +101,44 @@ namespace DigiGymWebApp_HDip.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("WeightEntries");
+        }
+
+
+         public async Task<IActionResult> Edit(int? id)
+        {   
+            var userId = _userManager.GetUserId(User);
+            var weightEntry = await _context.WeightEntries
+                                  .Where(f => f.WeightID == id && f.Id == userId)
+                                   // Return first match
+                                  .FirstOrDefaultAsync();
+
+            return View(weightEntry);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("WeightID,Weight,Timestamp")] WeightEntry weightEntry)
+        {
+            if (ModelState.IsValid)
+            { 
+                var userId = _userManager.GetUserId(User);
+                var existingWeightEntry = await _context.WeightEntries
+                                                  .Where(f => f.WeightID == id && f.Id == userId)
+                                                   // Important
+                                                  .AsNoTracking()
+                                                  .FirstOrDefaultAsync();
+
+                weightEntry.Id = existingWeightEntry.Id;
+                weightEntry.Timestamp = existingWeightEntry.Timestamp;
+
+                _context.Update(weightEntry);
+                await _context.SaveChangesAsync();
+
+                // redirect to details page of item after editing item
+                return RedirectToAction("Details", new { id = weightEntry.WeightID });
+            }
+            return View();
         }
 
     }
