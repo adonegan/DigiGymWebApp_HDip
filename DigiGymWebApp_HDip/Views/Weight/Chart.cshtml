@@ -12,7 +12,9 @@
             <p class="text-center dashed pb-3">
                 See how your weight progresses over time.
             </p>
-            <canvas id="weightChart"></canvas>
+            <div class="weightChartContainerMain">
+                <canvas id="weightChart"></canvas>
+            </div>
 
             <!-- Hidden elements to hold the JSON data -->
             <div id="weightData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Weight)))</div>

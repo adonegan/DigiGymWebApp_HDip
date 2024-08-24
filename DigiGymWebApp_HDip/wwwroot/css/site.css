@@ -116,6 +116,16 @@ a.btn.btn-primary {
         color: black;
     }
 
+/*btn.btn-primary {
+    background: #345760;
+    color: white;
+    margin: 5px;
+}
+
+    btn.btn-primary:hover {
+        color: black;
+    }*/
+
 
 li {
     list-style-type:none;
@@ -206,4 +216,40 @@ table {
     padding: 15px;
     border-radius: 15px;
     word-wrap: break-word; 
+}
+
+
+/* Make the canvas responsive */
+#macroPie,
+#waterChart,
+#weightChart {
+    width: 100% !important; 
+    height: auto !important; 
+}
+
+/*Food Details*/
+.foodChartContainer {
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/*Water Chart page*/
+.waterChartContainer {
+    width: 50%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/*Weight Chart page*/
+.weightChartContainerMain {
+    width: 50%;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }

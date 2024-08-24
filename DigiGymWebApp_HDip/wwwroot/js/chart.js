@@ -1,11 +1,6 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿document.addEventListener('DOMContentLoaded', (event) => {
 
-// Write your JavaScript code.
-
-
-
-document.addEventListener('DOMContentLoaded', (event) => {
+    Chart.register(ChartDataLabels);
 
     // store html element
     var ctx = document.getElementById('weightChart').getContext('2d');
@@ -38,18 +33,32 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 x: {
                     type: 'time',
                     time: {
                         unit: 'month',
                         tooltipFormat: 'MMM YYYY'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
                     }
                 },
                 y: {
                     beginAtZero: false,
                     min: yAxisMin,
-                    max: yAxisMax
+                    max: yAxisMax,
+                    title: {
+                        display: true,
+                        text: 'Weight'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    display: false  
                 }
             }
         }
