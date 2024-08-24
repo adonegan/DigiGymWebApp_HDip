@@ -1,0 +1,28 @@
+﻿@model int
+
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Chart";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="pre-footer">
+
+            <h2 class="text-center mt-3">Water Chart</h2>
+            <p class="text-center dashed pb-3">
+                See your daily water intake.
+            </p>
+            <div class="waterChartContainer">
+                <canvas id="waterChart"></canvas>
+            </div>
+
+            <div id="waterData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model))</div>
+            <div class="text-center pt-4">
+                <a asp-controller="Water" asp-action="WaterEntries">Back to Water Entries >></a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
