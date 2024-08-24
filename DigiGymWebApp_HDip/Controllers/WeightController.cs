@@ -113,7 +113,7 @@ namespace DigiGymWebApp_HDip.Controllers
                                   .FirstOrDefaultAsync();
 
             return View(weightEntry);
-        }
+         }
 
 
         [HttpPost]
@@ -131,6 +131,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 weightEntry.Id = existingWeightEntry.Id;
                 weightEntry.Timestamp = existingWeightEntry.Timestamp;
+                //weightEntry.Timestamp = DateTime.Now // don't use because then the date changes, what if you edit a few days later?
 
                 _context.Update(weightEntry);
                 await _context.SaveChangesAsync();

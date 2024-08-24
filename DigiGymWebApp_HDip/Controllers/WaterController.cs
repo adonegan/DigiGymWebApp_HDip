@@ -121,5 +121,28 @@ namespace DigiGymWebApp_HDip.Controllers
             }
             return View();
         }
+
+
+
+        public async Task<IActionResult> Chart()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            // Get today's date range
+            var today = DateTime.Today;
+            var startOfDay = today;
+            var endOfDay = today.AddDays(1).AddTicks(-1); // End of today
+
+            // Fetch water entries for today
+            var dailyWaterEntries = await _context.WaterEntries
+                .Where(x => x.Id == userId && x.Timestamp >= startOfDay && x.Timestamp <= endOfDay)
+                .ToListAsync();
+
+            // Calculate total intake for today
+            var totalIntakeToday = dailyWaterEntries.Sum(w => w.Amount);
+
+            return View(totalIntakeToday);
+
+        }
     }
 }
