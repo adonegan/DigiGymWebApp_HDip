@@ -12,6 +12,8 @@ namespace DigiGymWebApp_HDip.Models
         [DisplayName("Amount in mls")]
         public int Amount { get; set; }
 
+        [Required]
+        public DateTime Timestamp { get; set; } = DateTime.Now;
 
         //Foreign key
         public string Id { get; set; }
