@@ -88,7 +88,25 @@ namespace DigiGymWebApp_HDip.Controllers
         public async Task<IActionResult> UpgradeToAdmin(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+            if (user == null) {
+                return NotFound();
+            }
             user.UserType = UserTypes.Admin;
+            user.ApprovalStatus = ApprovalStatuses.None;
+            _context.SaveChanges();
+
+            return RedirectToAction("ManageUser", user);
+        }
+
+        // Admins are downgraded to Trainers
+        // Would like be a different role if more employee roles are added later!
+        public async Task<IActionResult> DowngradeAdmin(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) {
+                return NotFound();
+            }
+            user.UserType = UserTypes.Trainer;
             user.ApprovalStatus = ApprovalStatuses.None;
             _context.SaveChanges();
 

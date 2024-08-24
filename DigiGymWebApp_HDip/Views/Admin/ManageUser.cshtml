@@ -1,7 +1,14 @@
-﻿@model DigiGymWebApp_HDip.Models.ApplicationUser
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@model DigiGymWebApp_HDip.Models.ApplicationUser
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "ManageUser";
+}
+
+@{
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 }
 
 <div class="container">
@@ -70,10 +77,19 @@
                     <a asp-action="RejectTrainer" asp-route-id="@Model?.Id">Reject Trainer</a>
                     <br />
                     <a asp-action="PendingApproval">Go to Pending List</a> |
-                    <a asp-action="Trainers">Back to Trainers List</a>
+                    <a asp-action="Trainers">Back to Trainers List</a> |
+                    <a asp-action="UpgradeToAdmin" asp-route-id="@Model.Id">Upgrade to Admin</a>
                 </div>
-            } else if (@Model.UserType == UserTypes.Admin)
+            }
+            else if (@Model.UserType == UserTypes.Admin && SignInManager.IsSignedIn(User))
             {
+                // Logged in admin can't downgrade themselves
+                if (@Model.Id != currentUserId) {
+                    <div class="text-center">
+                        <a asp-action="DowngradeAdmin" asp-route-id="@Model.Id">Downgrade Admin</a>
+                        <br />
+                    </div>
+                }
                 <div class="text-center">
                     <a asp-action="Admins">Back to Admin List</a>
                 </div>
