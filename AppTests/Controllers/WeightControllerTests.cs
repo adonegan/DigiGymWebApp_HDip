@@ -3,11 +3,8 @@ using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
-using NuGet.Packaging.Signing;
 using System.Security.Claims;
 
 namespace AppTests.Controllers

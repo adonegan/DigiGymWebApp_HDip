@@ -1,12 +1,9 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
-using DigiGymWebApp_HDip.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
