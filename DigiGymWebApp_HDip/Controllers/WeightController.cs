@@ -23,7 +23,6 @@ namespace DigiGymWebApp_HDip.Controllers
             _context.Database.EnsureCreated();
         }
 
-
         public async Task<IActionResult> WeightEntries()
         {
             var userId = _userManager.GetUserId(User);
@@ -34,12 +33,10 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(weightEntries);
         }
 
-
         public async Task<IActionResult> Create()
         {
             return View("Create");
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -59,12 +56,10 @@ namespace DigiGymWebApp_HDip.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Confirm(WeightEntry weightEntry)
         {
             return View(weightEntry);
         }
-
 
         public async Task<IActionResult> Chart()
         {
@@ -75,7 +70,6 @@ namespace DigiGymWebApp_HDip.Controllers
                                 .ToListAsync();
             return View(allWeight);
         }
-
 
         public async Task<IActionResult> Details(int id)
         {
@@ -96,25 +90,21 @@ namespace DigiGymWebApp_HDip.Controllers
             var weightEntry = await _context.WeightEntries
                                           .Where(f => f.WeightID == id && f.Id == userId)
                                           .FirstOrDefaultAsync();
-
             _context.Remove(weightEntry);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("WeightEntries");
         }
 
-
-         public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {   
             var userId = _userManager.GetUserId(User);
             var weightEntry = await _context.WeightEntries
                                   .Where(f => f.WeightID == id && f.Id == userId)
                                    // Return first match
                                   .FirstOrDefaultAsync();
-
             return View(weightEntry);
-         }
-
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,7 +121,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 weightEntry.Id = existingWeightEntry.Id;
                 weightEntry.Timestamp = existingWeightEntry.Timestamp;
-                //weightEntry.Timestamp = DateTime.Now // don't use because then the date changes, what if you edit a few days later?
+                //weightEntry.Timestamp = DateTime.Now // don't use because then the date changes, what if you edit a few days later? no.
 
                 _context.Update(weightEntry);
                 await _context.SaveChangesAsync();
@@ -141,6 +131,5 @@ namespace DigiGymWebApp_HDip.Controllers
             }
             return View();
         }
-
     }
 }
