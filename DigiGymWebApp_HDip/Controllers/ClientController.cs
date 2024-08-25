@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
@@ -62,7 +61,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(profile);
         }
 
-
         public async Task<IActionResult> Edit(int? id)
         {   
             var userId = _userManager.GetUserId(User);
@@ -111,7 +109,6 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return View(profileEntry);
         }
-
 
         public async Task<IActionResult> Profile(DateTime date)
         {
