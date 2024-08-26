@@ -213,22 +213,38 @@ namespace AppTests.Controllers
         [TestMethod]
         public async Task Edit_2()
         {
-            // tests that a pre-existing record gets updated and verifies the profile is in db
+            // tests that a record gets updated and verifies the profile is in db and redirection is to Profile
+            // for this I'm creating a new record first instead of using a seeded one
             // arrange
             var userId = "testuser123"; 
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
-            var profileId = 2;
-            var updatedProfileEntry = new UserProfile
+            var profileId = 4;
+            var newProfileEntry = new UserProfile
             {
                 ProfileID = profileId,
-                Height = 179, // updated
-                Gender = GenderTypes.Female,
+                Height = 166, 
+                Gender = GenderTypes.Male,
                 Id = "testuser123"
             };
 
+            var updateToNewProfileEntry = new UserProfile
+            {
+                ProfileID = profileId,
+                Height = 170, // updated
+                Gender = GenderTypes.Male, 
+                Id = "testuser123"
+            };
+
+            // add the new entry to db
+            using (var context = new ApplicationDbContext(_options))
+            {
+                context.ProfileEntries.Add(newProfileEntry);
+                context.SaveChanges();
+            }
+
             // act + assert
-            var result = await _controller.Edit(profileId, updatedProfileEntry);
+            var result = await _controller.Edit(profileId, updateToNewProfileEntry);
             Assert.IsNotNull(result, "Result should not be null");
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult), "Result should be a RedirectToActionResult");
 
@@ -243,7 +259,7 @@ namespace AppTests.Controllers
                                     .Where(p => p.ProfileID == profileId && p.Id == userId)
                                     .FirstOrDefaultAsync();
                 Assert.IsNotNull(updatedEntry, "Updated food entry should not be null");
-                Assert.AreEqual(updatedProfileEntry.Height, updatedEntry.Height, "Height should match");
+                Assert.AreEqual(updateToNewProfileEntry.Height, updatedEntry.Height, "Height should match");
             }
         }
 
@@ -251,21 +267,45 @@ namespace AppTests.Controllers
         public async Task Edit_3()
         {
             // tests existing profile for invalid model state, height property is missing
+            // first I create a new entry for the db, I'm not modifying seeded entries from above
             // arrange
             var userId = "testuser123";
-            var profileId = 3; 
+            var profileId = 7; 
 
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
-            // Add invalid model state
+            var newProfileEntry = new UserProfile
+            {
+                ProfileID = profileId,
+                Height = 156,
+                Gender = GenderTypes.Male,
+                Id = userId
+            };
+
+            // add the new entry to db
+            using (var context = new ApplicationDbContext(_options))
+            {
+                context.ProfileEntries.Add(newProfileEntry);
+                context.SaveChanges();
+            }
+
+            // add invalid model state
             _controller.ModelState.AddModelError("Height", "Required");
 
+            // create invalid entry, Height is missing
             var invalidProfileEntry = new UserProfile
             {
                 ProfileID = profileId,
                 Gender = GenderTypes.Male,
-                Id = "testuser123"
+                Id = userId
             };
+
+            // get current state of profileId 7 in db BEFORE calling controller.Edit()
+            UserProfile originalProfileEntry;
+            using (var context = new ApplicationDbContext(_options))
+            {
+                originalProfileEntry = context.ProfileEntries.Find(profileId);
+            }
 
             // act + assert
             var result = await _controller.Edit(profileId, invalidProfileEntry);
@@ -274,11 +314,18 @@ namespace AppTests.Controllers
 
             // act + assert
             var viewResult = (ViewResult)result;
-            var model = viewResult.Model as UserProfile;
-            Assert.IsNotNull(model, "Model should not be null");
-            Assert.AreEqual(invalidProfileEntry.ProfileID, model.ProfileID);
-            Assert.IsTrue(viewResult.ViewData.ContainsKey("Gender"), "ViewData should contain 'Gender'");
-            Assert.IsNotNull(viewResult.ViewData["Gender"], "Gender should not be null");
+            Assert.IsTrue(viewResult.ViewData.ModelState.ContainsKey("Height"), "ModelState should contain 'Height' error"); // isTrue because db did not change as model passed in was invalid
+            Assert.AreEqual("Required", viewResult.ViewData.ModelState["Height"].Errors[0].ErrorMessage, "ModelState error message should be 'Required'");
+
+            // get pre-controller.Edit() profile entry state and compare to current db state to verify that profile entry was not updated
+            using (var context = new ApplicationDbContext(_options))
+            {
+                var currentProfileEntry = context.ProfileEntries.Find(profileId);
+                Assert.IsNotNull(currentProfileEntry, "Profile entry should still exist in the database");
+
+                // Assert that the database value have not changed
+                Assert.AreEqual(originalProfileEntry.Height, currentProfileEntry.Height, "Height should not have been updated");
+            }
         }
 
         [TestMethod]
