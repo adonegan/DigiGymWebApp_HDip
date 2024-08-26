@@ -19,8 +19,6 @@ namespace DigiGymWebApp_HDip.Controllers
             _userManager = userManager;
             _context.Database.EnsureCreated();
         }
-
-
         
         public async Task<ActionResult> Workouts()
         {
@@ -34,7 +32,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(workouts);
         }
 
-
         public async Task<ActionResult> Dates(DateTime date)
         {
             var userId = _userManager.GetUserId(User);
@@ -44,10 +41,6 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return View(workoutEntry);
         }
-
-
-
-
 
         public async Task<IActionResult> Create()
         {
@@ -61,9 +54,8 @@ namespace DigiGymWebApp_HDip.Controllers
             var selectListEffortLevel = new SelectList(enumEffortLevelValues);
             ViewBag.EffortLevel = selectListEffortLevel;
 
-            return View();
+            return View("Create");
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,12 +74,10 @@ namespace DigiGymWebApp_HDip.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Confirm(Workout workout)
         {
             return View(workout);
         }
-
 
         public async Task<IActionResult> Details(int id)
         {
@@ -96,9 +86,13 @@ namespace DigiGymWebApp_HDip.Controllers
                                   .Where(f => f.WorkoutID == id && f.Id == userId)
                                   .FirstOrDefaultAsync();
 
+            if (workoutEntry == null)
+            {
+                return NotFound();
+            }
+
             return View(workoutEntry);
         }
-
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -112,8 +106,6 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return RedirectToAction("Workouts");
         }
-
-
 
         public async Task<IActionResult> Edit(int? id)
         {   
@@ -130,12 +122,11 @@ namespace DigiGymWebApp_HDip.Controllers
 
             // Effort Level dropdown
             var enumEffortLevelValues = Enum.GetValues(typeof(EffortLevels));
-            var selectListEffortLevel = new SelectList(enumEffortLevelValues, workoutEntry.WorkoutType);
+            var selectListEffortLevel = new SelectList(enumEffortLevelValues, workoutEntry.EffortLevel);
             ViewBag.EffortLevel = selectListEffortLevel;
 
             return View(workoutEntry);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
