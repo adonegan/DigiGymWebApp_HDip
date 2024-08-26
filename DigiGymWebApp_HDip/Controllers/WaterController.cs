@@ -53,7 +53,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Confirm(Water waterEntry)
         {
             return View(waterEntry);
@@ -83,8 +82,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return RedirectToAction("WaterEntries");
         }
 
-
-
         public async Task<IActionResult> Edit(int? id)
         {   
             var userId = _userManager.GetUserId(User);
@@ -95,7 +92,6 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return View(waterEntry);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -122,8 +118,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return View();
         }
 
-
-
         public async Task<IActionResult> Chart()
         {
             var userId = _userManager.GetUserId(User);
@@ -131,7 +125,7 @@ namespace DigiGymWebApp_HDip.Controllers
             // Get today's date range
             var today = DateTime.Today;
             var startOfDay = today;
-            var endOfDay = today.AddDays(1).AddTicks(-1); // End of today
+            var endOfDay = today.AddDays(1).AddTicks(-1); // End of today, last moment e.g. 23:59:59.9999999
 
             // Fetch water entries for today
             var dailyWaterEntries = await _context.WaterEntries
