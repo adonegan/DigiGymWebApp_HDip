@@ -7,7 +7,6 @@ namespace DigiGymWebApp_HDip.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser> 
     {
-        public DbSet<Goal> Goals { get; set; }
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<Food> FoodDiary { get; set; }
         public DbSet<Water> WaterEntries { get; set; }
@@ -26,12 +25,6 @@ namespace DigiGymWebApp_HDip.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Goal>()
-                .HasOne(g => g.User)
-                .WithMany(u => u.Goals)
-                .HasForeignKey(g => g.Id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Workout>()
                 .HasOne(w => w.User)
