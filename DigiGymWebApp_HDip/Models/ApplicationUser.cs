@@ -52,7 +52,6 @@ namespace DigiGymWebApp_HDip.Models
 
         public List<Message> SentMessages { get; set; }
         public List<Message> ReceivedMessages { get; set; }
-        public List<Notification> Notifications { get; set; }
     }
 
 }

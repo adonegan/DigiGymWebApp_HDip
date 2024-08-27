@@ -14,7 +14,6 @@ namespace DigiGymWebApp_HDip.Data
         public DbSet<WeightEntry> WeightEntries { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -84,13 +83,6 @@ namespace DigiGymWebApp_HDip.Data
                 .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(r => r.ReceiverID)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Notification>()
-                .HasOne(u => u.User)
-                .WithMany(u => u.Notifications)
-                .HasForeignKey(u => u.UserID)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }
