@@ -24,7 +24,6 @@ namespace DigiGymWebApp_HDip.Controllers
             _context.Database.EnsureCreated();
         }
 
-
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -52,9 +51,7 @@ namespace DigiGymWebApp_HDip.Controllers
             user.ApprovalStatus = ApprovalStatuses.Approved;
 
             _context.SaveChanges();
-
             return RedirectToAction("ManageUser", user);
-
         }
 
         public async Task<IActionResult> RejectTrainer(string id)
@@ -64,9 +61,7 @@ namespace DigiGymWebApp_HDip.Controllers
             user.ApprovalStatus = ApprovalStatuses.Rejected;
 
             _context.SaveChanges();
-
             return RedirectToAction("ManageUser", user);
-
         }
 
         public async Task<IActionResult> Trainers()
@@ -99,7 +94,7 @@ namespace DigiGymWebApp_HDip.Controllers
         }
 
         // Admins are downgraded to Trainers
-        // Would like be a different role if more employee roles are added later!
+        // Would be a different role if more employee roles are added later!
         public async Task<IActionResult> DowngradeAdmin(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -118,6 +113,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var clients = await _userManager.Users
                 .Where(c=>c.UserType == UserTypes.Client)
                 .ToListAsync();
+
             return View(clients);
         }
     }
