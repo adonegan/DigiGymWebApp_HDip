@@ -112,7 +112,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var userId = _userManager.GetUserId(User);
             var workoutEntry = await _context.Workouts
                                   .Where(f => f.WorkoutID == id && f.Id == userId)
-                                   // Return first match
+                                  .AsNoTracking()
                                   .FirstOrDefaultAsync();
 
             // Workout Type dropdown
@@ -137,14 +137,15 @@ namespace DigiGymWebApp_HDip.Controllers
                 var userId = _userManager.GetUserId(User);
                 var existingWorkoutEntry = await _context.Workouts
                                                   .Where(f => f.WorkoutID == id && f.Id == userId)
-                                                   // Important
-                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
-                workoutEntry.Id = existingWorkoutEntry.Id;
-                workoutEntry.Date = existingWorkoutEntry.Date;
+                existingWorkoutEntry.WorkoutType = workoutEntry.WorkoutType;
+                existingWorkoutEntry.StartTime = workoutEntry.StartTime;
+                existingWorkoutEntry.EndTime = workoutEntry.EndTime;
+                existingWorkoutEntry.EffortLevel = workoutEntry.EffortLevel;
+                existingWorkoutEntry.OtherInfo = workoutEntry.OtherInfo;
 
-                _context.Update(workoutEntry);
+                _context.Update(existingWorkoutEntry);
                 await _context.SaveChangesAsync();
 
                 // redirect to details page of item after editing item

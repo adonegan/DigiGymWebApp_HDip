@@ -66,6 +66,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var userId = _userManager.GetUserId(User);
             var profileEntry = await _context.ProfileEntries
                                   .Where(p => p.ProfileID == id && p.Id == userId)
+                                  .AsNoTracking()
                                   .FirstOrDefaultAsync();
 
             var enumGenderTypeValues = Enum.GetValues(typeof(GenderTypes));
@@ -85,8 +86,6 @@ namespace DigiGymWebApp_HDip.Controllers
                 var userId = _userManager.GetUserId(User);
                 var existingProfileEntry = await _context.ProfileEntries
                                                   .Where(p => p.ProfileID == id && p.Id == userId)
-                                                  // Important
-                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
                 if (existingProfileEntry == null)
@@ -94,9 +93,10 @@ namespace DigiGymWebApp_HDip.Controllers
                     return NotFound();
                 }
 
-                profileEntry.Id = existingProfileEntry.Id;
-
-                _context.Update(profileEntry);
+                existingProfileEntry.Height = profileEntry.Height;
+                existingProfileEntry.Gender = profileEntry.Gender;
+                
+                _context.Update(existingProfileEntry);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Profile");

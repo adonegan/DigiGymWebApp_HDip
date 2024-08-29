@@ -98,7 +98,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var userId = _userManager.GetUserId(User);
             var weightEntry = await _context.WeightEntries
                                   .Where(f => f.WeightID == id && f.Id == userId)
-                                   // Return first match
+                                  .AsNoTracking()
                                   .FirstOrDefaultAsync();
             return View(weightEntry);
         }
@@ -112,15 +112,11 @@ namespace DigiGymWebApp_HDip.Controllers
                 var userId = _userManager.GetUserId(User);
                 var existingWeightEntry = await _context.WeightEntries
                                                   .Where(f => f.WeightID == id && f.Id == userId)
-                                                   // Important
-                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
-                weightEntry.Id = existingWeightEntry.Id;
-                weightEntry.Timestamp = existingWeightEntry.Timestamp;
-                //weightEntry.Timestamp = DateTime.Now // don't use because then the date changes, what if you edit a few days later? no.
+                existingWeightEntry.Weight = weightEntry.Weight;
 
-                _context.Update(weightEntry);
+                _context.Update(existingWeightEntry);
                 await _context.SaveChangesAsync();
 
                 // redirect to details page of item after editing item

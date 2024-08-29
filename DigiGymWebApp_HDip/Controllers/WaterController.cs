@@ -87,7 +87,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var userId = _userManager.GetUserId(User);
             var waterEntry = await _context.WaterEntries
                                   .Where(f => f.WaterID == id && f.Id == userId)
-                                   // Return first match
+                                  .AsNoTracking()
                                   .FirstOrDefaultAsync();
 
             return View(waterEntry);
@@ -102,14 +102,11 @@ namespace DigiGymWebApp_HDip.Controllers
                 var userId = _userManager.GetUserId(User);
                 var existingWaterEntry = await _context.WaterEntries
                                                   .Where(f => f.WaterID == id && f.Id == userId)
-                                                   // Important
-                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
-                waterEntry.Id = existingWaterEntry.Id;
-                waterEntry.Timestamp = existingWaterEntry.Timestamp;
+                existingWaterEntry.Amount = waterEntry.Amount;
 
-                _context.Update(waterEntry);
+                _context.Update(existingWaterEntry);
                 await _context.SaveChangesAsync();
 
                 // redirect to details page of item after editing item
