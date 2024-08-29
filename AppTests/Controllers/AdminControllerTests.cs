@@ -27,6 +27,7 @@ namespace AppTests.Controllers
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            // set up shared context for all test methods
             _context = new ApplicationDbContext(_options);
 
             // seed user data

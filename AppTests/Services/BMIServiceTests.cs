@@ -26,46 +26,42 @@ namespace AppTests.Services
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            _context = new ApplicationDbContext(_options);
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
             // seed user and test data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.ProfileEntries.Add(
+                new UserProfile
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.ProfileEntries.Add(
-                    new UserProfile
-                    {
-                        ProfileID = 1,
-                        Height = 161,
-                        Gender = GenderTypes.Female,
-                        Id = "testuser123"
-                    }
-                );
-                context.WeightEntries.Add(
-                    new WeightEntry
-                    {
-                        WeightID = 1,
-                        Weight = 150,
-                        Timestamp = new DateTime(2024,8,27),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-
-            }
-            _context = new ApplicationDbContext(_options);
+                    ProfileID = 1,
+                    Height = 161,
+                    Gender = GenderTypes.Female,
+                    Id = "testuser123"
+                }
+            );
+            _context.WeightEntries.Add(
+                new WeightEntry
+                {
+                    WeightID = 1,
+                    Weight = 150,
+                    Timestamp = new DateTime(2024,8,27),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
             _bmiService = new BMIService(_context); // important, initialize!
         }
-
 
         [TestMethod]
         public async Task Get_UserBMI()

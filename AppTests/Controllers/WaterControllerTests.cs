@@ -26,47 +26,46 @@ namespace AppTests.Controllers
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            // set up shared db context for all test methods
+            _context = new ApplicationDbContext(_options);
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
             // seed user and test data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.WaterEntries.AddRange(
+                new Water
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.WaterEntries.AddRange(
-                    new Water
-                    {
-                        WaterID = 1,
-                        Amount = 250,
-                        Timestamp = new DateTime(2024, 8, 27),
-                        Id = "testuser123"
-                    },
-                    new Water
-                    {
-                        WaterID = 2,
-                        Amount = 500,
-                        Timestamp = new DateTime(2024, 8, 26),
-                        Id = "testuser123"
-                    },
-                    new Water
-                    {
-                        WaterID = 3,
-                        Amount = 750,
-                        Timestamp = new DateTime(2024, 8, 25),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-            }
-            _context = new ApplicationDbContext(_options);
+                    WaterID = 1,
+                    Amount = 250,
+                    Timestamp = new DateTime(2024, 8, 27),
+                    Id = "testuser123"
+                },
+                new Water
+                {
+                    WaterID = 2,
+                    Amount = 500,
+                    Timestamp = new DateTime(2024, 8, 26),
+                    Id = "testuser123"
+                },
+                new Water
+                {
+                    WaterID = 3,
+                    Amount = 750,
+                    Timestamp = new DateTime(2024, 8, 25),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
         }
 
         [TestMethod]
@@ -114,12 +113,9 @@ namespace AppTests.Controllers
             Assert.AreEqual("Confirm", redirectResult.ActionName, "Redirect action name should be 'Confirm'");
 
             // act + assert
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var savedWater = await context.WaterEntries.FirstOrDefaultAsync(w => w.WaterID == water.WaterID);
-                Assert.IsNotNull(savedWater, "Water entry is saved to the database");
-                Assert.AreEqual(water.WaterID, savedWater.WaterID, "Saved water id matches water id");
-            }
+            var savedWater = await _context.WaterEntries.FirstOrDefaultAsync(w => w.WaterID == water.WaterID);
+            Assert.IsNotNull(savedWater, "Water entry is saved to the database");
+            Assert.AreEqual(water.WaterID, savedWater.WaterID, "Saved water id matches water id");
         }
 
         [TestMethod]
@@ -160,17 +156,14 @@ namespace AppTests.Controllers
 
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
-            using (var context = new ApplicationDbContext(_options))
+            _context.WaterEntries.Add(new Water
             {
-                context.WaterEntries.Add(new Water
-                {
-                    WaterID = waterIdToDelete,
-                    Amount = 2000,
-                    Timestamp = new DateTime(2024, 8, 20),
-                    Id = "testuser123"
-                });
-                context.SaveChanges();
-            }
+                WaterID = waterIdToDelete,
+                Amount = 2000,
+                Timestamp = new DateTime(2024, 8, 20),
+                Id = "testuser123"
+            });
+            _context.SaveChanges();
 
             var controller = new WaterController(_context, _userManagerMock.Object);
 
@@ -183,13 +176,10 @@ namespace AppTests.Controllers
             var redirectResult = (RedirectToActionResult)result;
             Assert.AreEqual("WaterEntries", redirectResult.ActionName, "Redirect action name should be 'WaterEntries'");
 
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var waterEntry = await context.WaterEntries
-                                      .Where(wa => wa.WaterID == waterIdToDelete && wa.Id == userId)
-                                      .FirstOrDefaultAsync();
-                Assert.IsNull(waterEntry, "Water entry should not be in the database");
-            }
+            var waterEntry = await _context.WaterEntries
+                                    .Where(wa => wa.WaterID == waterIdToDelete && wa.Id == userId)
+                                    .FirstOrDefaultAsync();
+            Assert.IsNull(waterEntry, "Water entry should not be in the database");
         }
 
 
@@ -243,7 +233,8 @@ namespace AppTests.Controllers
             var viewResult = (ViewResult)result;
             var model = (Water)viewResult.Model;
             Assert.IsNotNull(model, "Model should not be null");
-            Assert.AreEqual(waterId, model.WaterID);        }
+            Assert.AreEqual(waterId, model.WaterID);        
+        }
 
         [TestMethod]
         public async Task Details_2()
@@ -280,8 +271,6 @@ namespace AppTests.Controllers
             Assert.IsNotNull(result, "Result should not be null");
             Assert.IsInstanceOfType(result, typeof(NotFoundResult), "Result should be a NotFoundResult");
         }
-
-
 
         [TestMethod]
         public async Task Edit_1()
@@ -328,6 +317,10 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
+            // add the new entry to db
+            _context.WaterEntries.Add(newWaterEntry);
+            _context.SaveChanges();
+
             var updateToNewWaterEntry = new Water
             {
                 WaterID = waterId,
@@ -336,14 +329,16 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
-            // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.WaterEntries.Add(newWaterEntry);
-                context.SaveChanges();
-            }
-
             var controller = new WaterController(_context, _userManagerMock.Object);
+
+            // Detach any existing tracked entity with the same key
+            // System.InvalidOperationException: The instance of entity type 'Water' cannot be tracked because another instance with the, AsNoTracking() issue
+            var existingEntry = _context.ChangeTracker.Entries<Water>()
+                                         .FirstOrDefault(e => e.Entity.WaterID == waterId);
+            if (existingEntry != null)
+            {
+                _context.Entry(existingEntry.Entity).State = EntityState.Detached;
+            }
 
             // act + assert
             var result = await controller.Edit(waterId, updateToNewWaterEntry);
@@ -355,14 +350,11 @@ namespace AppTests.Controllers
             Assert.AreEqual("Details", redirectResult.ActionName, "Redirect action name should be 'Details'");
 
             // check that the water entry was updated in the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var updatedEntry = await context.WaterEntries
-                                    .Where(w => w.WaterID == waterId && w.Id == userId)
-                                    .FirstOrDefaultAsync();
-                Assert.IsNotNull(updatedEntry, "Updated water entry should not be null");
-                Assert.AreEqual(updateToNewWaterEntry.Amount, updatedEntry.Amount, "Amount should match");
-            }
+            var updatedEntry = await _context.WaterEntries
+                                .Where(w => w.WaterID == waterId && w.Id == userId)
+                                .FirstOrDefaultAsync();
+            Assert.IsNotNull(updatedEntry, "Updated water entry should not be null");
+            Assert.AreEqual(updateToNewWaterEntry.Amount, updatedEntry.Amount, "Amount should match");
         }
 
         [TestMethod]
@@ -387,11 +379,8 @@ namespace AppTests.Controllers
 
 
             // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.WaterEntries.Add(newWaterEntry);
-                context.SaveChanges();
-            }
+            _context.WaterEntries.Add(newWaterEntry);
+            _context.SaveChanges();
 
             var controller = new WaterController(_context, _userManagerMock.Object);
 
@@ -408,10 +397,7 @@ namespace AppTests.Controllers
 
             // get current state of waterId 7 in db BEFORE calling controller.Edit()
             Water originalWaterEntry;
-            using (var context = new ApplicationDbContext(_options))
-            {
-                originalWaterEntry = context.WaterEntries.Find(waterId);
-            }
+            originalWaterEntry = _context.WaterEntries.Find(waterId);
 
             // act + assert
             var result = await controller.Edit(waterId, invalidWaterEntry);
@@ -425,14 +411,11 @@ namespace AppTests.Controllers
 
 
             // get pre-controller.Edit() water entry state and compare to current db state to verify that water entry was not updated
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var currentWaterEntry = context.WaterEntries.Find(waterId);
-                Assert.IsNotNull(currentWaterEntry, "Water entry should still exist in the database");
+            var currentWaterEntry = _context.WaterEntries.Find(waterId);
+            Assert.IsNotNull(currentWaterEntry, "Water entry should still exist in the database");
 
-                // Assert that the database values have not changed
-                Assert.AreEqual(originalWaterEntry.Amount, currentWaterEntry.Amount, "Amount should not have been updated");
-            }
+            // Assert that the database values have not changed
+            Assert.AreEqual(originalWaterEntry.Amount, currentWaterEntry.Amount, "Amount should not have been updated");
         }
     }
 }

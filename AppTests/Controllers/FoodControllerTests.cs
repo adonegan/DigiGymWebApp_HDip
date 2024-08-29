@@ -31,6 +31,9 @@ namespace AppTests.Controllers
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            // set up shared context for all test methods
+            _context = new ApplicationDbContext(_options);
+
             // set up usermanager mock
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
@@ -40,68 +43,62 @@ namespace AppTests.Controllers
             _mockCalorieCounterService = new Mock<ICalorieCounterService>();
 
             // seed data - 3 records + test user data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.FoodDiary.AddRange(
+                new Food
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.FoodDiary.AddRange(
-                    new Food
-                    {
-                        FoodID = 1,
-                        FoodName = "Bread",
-                        FoodBrand = "Brennans",
-                        Serving = 2,
-                        Calories = 174,
-                        Protein = 5,
-                        Carbohydrates = 16,
-                        Fat = 20,
-                        MealType = MealTypes.Breakfast,
-                        Grams = 100,
-                        CreatedAt = new DateTime(2024, 8, 10),
-                        Id = "testuser123"
-                    },
-                    new Food
-                    {
-                        FoodID = 2,
-                        FoodName = "Steak",
-                        FoodBrand = "Dunnes Stores",
-                        Serving = 2,
-                        Calories = 575,
-                        Protein = 25,
-                        Carbohydrates = 10,
-                        Fat = 30,
-                        MealType = MealTypes.Dinner,
-                        Grams = 250,
-                        CreatedAt = new DateTime(2024, 8, 9),
-                        Id = "testuser123"
-                    },
-                    new Food
-                    {
-                        FoodID = 3,
-                        FoodName = "Nutrigrain Bar",
-                        FoodBrand = "Kellogg's",
-                        Serving = 1,
-                        Calories = 175,
-                        Protein = 15,
-                        Carbohydrates = 20,
-                        Fat = 25,
-                        MealType = MealTypes.Snack,
-                        Grams = 44,
-                        CreatedAt = new DateTime(2024, 8, 7),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-            }
-
-            // create a new context for each test
-            _context = new ApplicationDbContext(_options);
+                    FoodID = 1,
+                    FoodName = "Bread",
+                    FoodBrand = "Brennans",
+                    Serving = 2,
+                    Calories = 174,
+                    Protein = 5,
+                    Carbohydrates = 16,
+                    Fat = 20,
+                    MealType = MealTypes.Breakfast,
+                    Grams = 100,
+                    CreatedAt = new DateTime(2024, 8, 10),
+                    Id = "testuser123"
+                },
+                new Food
+                {
+                    FoodID = 2,
+                    FoodName = "Steak",
+                    FoodBrand = "Dunnes Stores",
+                    Serving = 2,
+                    Calories = 575,
+                    Protein = 25,
+                    Carbohydrates = 10,
+                    Fat = 30,
+                    MealType = MealTypes.Dinner,
+                    Grams = 250,
+                    CreatedAt = new DateTime(2024, 8, 9),
+                    Id = "testuser123"
+                },
+                new Food
+                {
+                    FoodID = 3,
+                    FoodName = "Nutrigrain Bar",
+                    FoodBrand = "Kellogg's",
+                    Serving = 1,
+                    Calories = 175,
+                    Protein = 15,
+                    Carbohydrates = 20,
+                    Fat = 25,
+                    MealType = MealTypes.Snack,
+                    Grams = 44,
+                    CreatedAt = new DateTime(2024, 8, 7),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
         }
 
         [TestMethod]
@@ -192,25 +189,23 @@ namespace AppTests.Controllers
             // arrange
             var userId = "testuser123";
             var otherUserId = "otheruser123";
-            using (var context = new ApplicationDbContext(_options))
+
+            _context.FoodDiary.Add(new Food
             {
-                context.FoodDiary.Add(new Food
-                {
-                    FoodID = 6,
-                    FoodName = "Orange",
-                    FoodBrand = "Kellogg's",
-                    Serving = 1,
-                    Calories = 175,
-                    Protein = 15,
-                    Carbohydrates = 20,
-                    Fat = 25,
-                    MealType = MealTypes.Snack,
-                    Grams = 44,
-                    CreatedAt = new DateTime(2024, 8, 20),
-                    Id = otherUserId
-                });
-                context.SaveChanges();
-            }
+                FoodID = 6,
+                FoodName = "Orange",
+                FoodBrand = "Kellogg's",
+                Serving = 1,
+                Calories = 175,
+                Protein = 15,
+                Carbohydrates = 20,
+                Fat = 25,
+                MealType = MealTypes.Snack,
+                Grams = 44,
+                CreatedAt = new DateTime(2024, 8, 20),
+                Id = otherUserId
+            });
+            _context.SaveChanges();
 
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
             var controller = new FoodController(_context, _userManagerMock.Object, null);
@@ -285,12 +280,9 @@ namespace AppTests.Controllers
             Assert.AreEqual("Confirm", redirectResult.ActionName, "Redirect action name should be 'Confirm'");
 
             // verify that the Food record is added to the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var savedFood = await context.FoodDiary.FirstOrDefaultAsync(f => f.FoodName == food.FoodName);
-                Assert.IsNotNull(savedFood, "Food entry should be saved to the database");
-                Assert.AreEqual(food.FoodName, savedFood.FoodName, "Saved food name should match");
-            }
+            var savedFood = await _context.FoodDiary.FirstOrDefaultAsync(f => f.FoodName == food.FoodName);
+            Assert.IsNotNull(savedFood, "Food entry should be saved to the database");
+            Assert.AreEqual(food.FoodName, savedFood.FoodName, "Saved food name should match");
         }
 
         [TestMethod]
@@ -418,25 +410,22 @@ namespace AppTests.Controllers
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
             // Create a new context and add test data
-            using (var context = new ApplicationDbContext(_options))
+            _context.FoodDiary.Add(new Food
             {
-                context.FoodDiary.Add(new Food
-                {
-                    FoodID = foodIdToDelete,
-                    FoodName = "Cheese",
-                    FoodBrand = "Farmhouse",
-                    Serving = 3,
-                    Calories = 50,
-                    Protein = 20,
-                    Carbohydrates = 10,
-                    Fat = 20,
-                    MealType = MealTypes.Breakfast,
-                    Grams = 100,
-                    CreatedAt = DateTime.Now,
-                    Id = userId
-                });
-                context.SaveChanges();
-            }
+                FoodID = foodIdToDelete,
+                FoodName = "Cheese",
+                FoodBrand = "Farmhouse",
+                Serving = 3,
+                Calories = 50,
+                Protein = 20,
+                Carbohydrates = 10,
+                Fat = 20,
+                MealType = MealTypes.Breakfast,
+                Grams = 100,
+                CreatedAt = DateTime.Now,
+                Id = userId
+            });
+            _context.SaveChanges();
 
             var controller = new FoodController(_context, _userManagerMock.Object, _mockCalorieCounterService.Object);
 
@@ -450,13 +439,10 @@ namespace AppTests.Controllers
             Assert.AreEqual("FoodDiary", redirectResult.ActionName, "Redirect action name should be 'FoodDiary'");
 
             // verify that the food entry was removed from the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var foodEntry = await context.FoodDiary
-                                      .Where(f => f.FoodID == foodIdToDelete && f.Id == userId)
-                                      .FirstOrDefaultAsync();
-                Assert.IsNull(foodEntry, "Food entry should be removed from the database");
-            }
+            var foodEntry = await _context.FoodDiary
+                                    .Where(f => f.FoodID == foodIdToDelete && f.Id == userId)
+                                    .FirstOrDefaultAsync();
+            Assert.IsNull(foodEntry, "Food entry should be removed from the database");
         }
 
         [TestMethod]
@@ -523,6 +509,10 @@ namespace AppTests.Controllers
                 Id = userId
             };
 
+            // add the new entry to db
+            _context.FoodDiary.Add(newFoodEntry);
+            _context.SaveChanges();
+
             var updateToNewFoodEntry = new Food
             {
                 FoodID = foodId,
@@ -539,14 +529,16 @@ namespace AppTests.Controllers
                 Id = userId
             };
 
-            // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.FoodDiary.Add(newFoodEntry);
-                context.SaveChanges();
-            }
-
             var controller = new FoodController(_context, _userManagerMock.Object, _mockCalorieCounterService.Object);
+
+            // Detach any existing tracked entity with the same key
+            // System.InvalidOperationException: The instance of entity type 'Food' cannot be tracked because another instance with the, AsNoTracking() issue
+            var existingEntry = _context.ChangeTracker.Entries<Food>()
+                                         .FirstOrDefault(e => e.Entity.FoodID == foodId);
+            if (existingEntry != null)
+            {
+                _context.Entry(existingEntry.Entity).State = EntityState.Detached;
+            }
 
             // act + assert
             var result = await controller.Edit(foodId, updateToNewFoodEntry);
@@ -558,14 +550,11 @@ namespace AppTests.Controllers
             Assert.AreEqual("FoodDiary", redirectResult.ActionName, "Redirect action name should be 'FoodDiary'");
 
             // check that the food entry was updated in the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var updatedEntry = await context.FoodDiary
-                                    .Where(f => f.FoodID == foodId && f.Id == userId)
-                                    .FirstOrDefaultAsync();
-                Assert.IsNotNull(updatedEntry, "Updated food entry should not be null");
-                Assert.AreEqual(updateToNewFoodEntry.FoodName, updatedEntry.FoodName, "FoodName should match");
-            }
+            var updatedEntry = await _context.FoodDiary
+                                .Where(f => f.FoodID == foodId && f.Id == userId)
+                                .FirstOrDefaultAsync();
+            Assert.IsNotNull(updatedEntry, "Updated food entry should not be null");
+            Assert.AreEqual(updateToNewFoodEntry.FoodName, updatedEntry.FoodName, "FoodName should match");
         }
 
         [TestMethod]
@@ -597,11 +586,8 @@ namespace AppTests.Controllers
             };
 
             // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.FoodDiary.Add(newFoodEntry);
-                context.SaveChanges();
-            }
+            _context.FoodDiary.Add(newFoodEntry);
+            _context.SaveChanges();
 
             var controller = new FoodController(_context, _userManagerMock.Object, _mockCalorieCounterService.Object);
 
@@ -626,10 +612,7 @@ namespace AppTests.Controllers
 
             // get current state of foodId 5 in db BEFORE calling controller.Edit()
             Food originalFoodEntry;
-            using (var context = new ApplicationDbContext(_options))
-            {
-                originalFoodEntry = context.FoodDiary.Find(foodId);
-            }
+            originalFoodEntry = _context.FoodDiary.Find(foodId);
 
             // act + assert
             var result = await controller.Edit(foodId, invalidFoodEntry);
@@ -643,15 +626,12 @@ namespace AppTests.Controllers
 
 
             // get pre-controller.Edit() food entry state and compare to current db state to verify that food entry was not updated
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var currentFoodEntry = context.FoodDiary.Find(foodId);
-                Assert.IsNotNull(currentFoodEntry, "Food entry should still exist in the database");
+            var currentFoodEntry = _context.FoodDiary.Find(foodId);
+            Assert.IsNotNull(currentFoodEntry, "Food entry should still exist in the database");
 
-                // Assert that the database values have not changed
-                Assert.AreEqual(originalFoodEntry.FoodName, currentFoodEntry.FoodName, "FoodName should not have been updated");
-                Assert.AreEqual(originalFoodEntry.FoodBrand, currentFoodEntry.FoodBrand, "FoodBrand should not have been updated");
-            }
+            // Assert that the database values have not changed
+            Assert.AreEqual(originalFoodEntry.FoodName, currentFoodEntry.FoodName, "FoodName should not have been updated");
+            Assert.AreEqual(originalFoodEntry.FoodBrand, currentFoodEntry.FoodBrand, "FoodBrand should not have been updated");
         }
     }
 }

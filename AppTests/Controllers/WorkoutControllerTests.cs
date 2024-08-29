@@ -27,60 +27,57 @@ namespace AppTests.Controllers
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            _context = new ApplicationDbContext(_options);
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
             // seed user and test data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.Workouts.AddRange(
+                new Workout
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.Workouts.AddRange(
-                    new Workout
-                    {
-                        WorkoutID = 1,
-                        WorkoutType = WorkoutTypes.Cycle,
-                        StartTime = new DateTime(2024, 8, 26, 21, 22, 0),
-                        EndTime = new DateTime(2024, 8, 26, 21, 52, 0),
-                        EffortLevel = EffortLevels.Low,
-                        OtherInfo = "",
-                        Date = new DateTime(2024, 8, 26, 23, 00, 0),
-                        Id = "testuser123"
-                    },
-                    new Workout
-                    {
-                        WorkoutID = 2,
-                        WorkoutType = WorkoutTypes.Swim,
-                        StartTime = new DateTime(2024, 8, 23, 21, 22, 0),
-                        EndTime = new DateTime(2024, 8, 23, 21, 52, 0),
-                        EffortLevel = EffortLevels.High,
-                        OtherInfo = "",
-                        Date = new DateTime(2024, 8, 25, 23, 00, 0),
-                        Id = "testuser123"
-                    },
-                    new Workout
-                    {
-                        WorkoutID = 3,
-                        WorkoutType = WorkoutTypes.Run,
-                        StartTime = new DateTime(2024, 8, 24, 19, 22, 0),
-                        EndTime = new DateTime(2024, 8, 24, 20, 52, 0),
-                        EffortLevel = EffortLevels.Peak,
-                        OtherInfo = "",
-                        Date = new DateTime(2024, 8, 24, 23, 00, 0),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-
-            }
-            _context = new ApplicationDbContext(_options);
+                    WorkoutID = 1,
+                    WorkoutType = WorkoutTypes.Cycle,
+                    StartTime = new DateTime(2024, 8, 26, 21, 22, 0),
+                    EndTime = new DateTime(2024, 8, 26, 21, 52, 0),
+                    EffortLevel = EffortLevels.Low,
+                    OtherInfo = "",
+                    Date = new DateTime(2024, 8, 26, 23, 00, 0),
+                    Id = "testuser123"
+                },
+                new Workout
+                {
+                    WorkoutID = 2,
+                    WorkoutType = WorkoutTypes.Swim,
+                    StartTime = new DateTime(2024, 8, 23, 21, 22, 0),
+                    EndTime = new DateTime(2024, 8, 23, 21, 52, 0),
+                    EffortLevel = EffortLevels.High,
+                    OtherInfo = "",
+                    Date = new DateTime(2024, 8, 25, 23, 00, 0),
+                    Id = "testuser123"
+                },
+                new Workout
+                {
+                    WorkoutID = 3,
+                    WorkoutType = WorkoutTypes.Run,
+                    StartTime = new DateTime(2024, 8, 24, 19, 22, 0),
+                    EndTime = new DateTime(2024, 8, 24, 20, 52, 0),
+                    EffortLevel = EffortLevels.Peak,
+                    OtherInfo = "",
+                    Date = new DateTime(2024, 8, 24, 23, 00, 0),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
         }
 
         [TestMethod]
@@ -168,12 +165,9 @@ namespace AppTests.Controllers
             Assert.AreEqual("Confirm", redirectResult.ActionName, "Redirect action name should be 'Confirm'");
 
             // verify that the Workout record is added to the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var savedWorkout = await context.Workouts.FirstOrDefaultAsync(w => w.WorkoutID == workout.WorkoutID);
-                Assert.IsNotNull(savedWorkout, "Workout entry should be saved to the database");
-                Assert.AreEqual(workout.WorkoutType, savedWorkout.WorkoutType, "Saved workout type should match");
-            }
+            var savedWorkout = await _context.Workouts.FirstOrDefaultAsync(w => w.WorkoutID == workout.WorkoutID);
+            Assert.IsNotNull(savedWorkout, "Workout entry should be saved to the database");
+            Assert.AreEqual(workout.WorkoutType, savedWorkout.WorkoutType, "Saved workout type should match");
         }
 
         [TestMethod]
@@ -292,22 +286,19 @@ namespace AppTests.Controllers
             // mock GetUserId to return the seeded user ID
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
-            // create a new context and add test data
-            using (var context = new ApplicationDbContext(_options))
+            // Add more test data
+            _context.Workouts.Add(new Workout
             {
-                context.Workouts.Add(new Workout
-                {
-                    WorkoutID = workoutIdToDelete,
-                    WorkoutType = WorkoutTypes.Walk,
-                    StartTime = new DateTime(2023, 8, 26, 21, 22, 0),
-                    EndTime = new DateTime(2023, 8, 26, 21, 52, 0),
-                    EffortLevel = EffortLevels.Peak,
-                    OtherInfo = "",
-                    Date = new DateTime(2023, 8, 26, 23, 00, 0),
-                    Id = "testuser123"
-                });
-                context.SaveChanges();
-            }
+                WorkoutID = workoutIdToDelete,
+                WorkoutType = WorkoutTypes.Walk,
+                StartTime = new DateTime(2023, 8, 26, 21, 22, 0),
+                EndTime = new DateTime(2023, 8, 26, 21, 52, 0),
+                EffortLevel = EffortLevels.Peak,
+                OtherInfo = "",
+                Date = new DateTime(2023, 8, 26, 23, 00, 0),
+                Id = "testuser123"
+            });
+            _context.SaveChanges();
 
             var controller = new WorkoutController(_context, _userManagerMock.Object);
 
@@ -321,13 +312,10 @@ namespace AppTests.Controllers
             Assert.AreEqual("Workouts", redirectResult.ActionName, "Redirect action name should be 'Workouts'");
 
             // verify that the workout entry was removed from the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var workoutEntry = await context.Workouts
-                                      .Where(w => w.WorkoutID == workoutIdToDelete && w.Id == userId)
-                                      .FirstOrDefaultAsync();
-                Assert.IsNull(workoutEntry, "Workout entry should be removed from the database");
-            }
+            var workoutEntry = await _context.Workouts
+                                    .Where(w => w.WorkoutID == workoutIdToDelete && w.Id == userId)
+                                    .FirstOrDefaultAsync();
+            Assert.IsNull(workoutEntry, "Workout entry should be removed from the database");
         }
 
         [TestMethod]
@@ -401,6 +389,10 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
+            // add the new entry to db
+            _context.Workouts.Add(newWorkoutEntry);
+            _context.SaveChanges();
+
             var updateToNewWorkoutEntry = new Workout
             {
                 WorkoutID = workoutId,
@@ -413,14 +405,16 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
-            // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.Workouts.Add(newWorkoutEntry);
-                context.SaveChanges();
-            }
-
             var controller = new WorkoutController(_context, _userManagerMock.Object);
+
+            // Detach any existing tracked entity with the same key
+            // System.InvalidOperationException: The instance of entity type 'Workout' cannot be tracked because another instance with the, AsNoTracking() issue
+            var existingEntry = _context.ChangeTracker.Entries<Workout>()
+                                         .FirstOrDefault(e => e.Entity.WorkoutID == workoutId);
+            if (existingEntry != null)
+            {
+                _context.Entry(existingEntry.Entity).State = EntityState.Detached;
+            }
 
             // act + assert
             var result = await controller.Edit(workoutId, updateToNewWorkoutEntry);
@@ -432,14 +426,11 @@ namespace AppTests.Controllers
             Assert.AreEqual("Details", redirectResult.ActionName, "Redirect action name should be 'Details'");
 
             // check that the workout entry was updated in the database
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var updatedEntry = await context.Workouts
-                                    .Where(w => w.WorkoutID == workoutId && w.Id == userId)
-                                    .FirstOrDefaultAsync();
-                Assert.IsNotNull(updatedEntry, "Updated workout entry should not be null");
-                Assert.AreEqual(updateToNewWorkoutEntry.EffortLevel, updatedEntry.EffortLevel, "EffortLevel should match");
-            }
+            var updatedEntry = await _context.Workouts
+                                .Where(w => w.WorkoutID == workoutId && w.Id == userId)
+                                .FirstOrDefaultAsync();
+            Assert.IsNotNull(updatedEntry, "Updated workout entry should not be null");
+            Assert.AreEqual(updateToNewWorkoutEntry.EffortLevel, updatedEntry.EffortLevel, "EffortLevel should match");
         }
 
         [TestMethod]
@@ -468,11 +459,8 @@ namespace AppTests.Controllers
 
 
             // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.Workouts.Add(newWorkoutEntry);
-                context.SaveChanges();
-            }
+            _context.Workouts.Add(newWorkoutEntry);
+            _context.SaveChanges();
 
             var controller = new WorkoutController(_context, _userManagerMock.Object);
 
@@ -493,10 +481,7 @@ namespace AppTests.Controllers
 
             // get current state of workoutId 7 in db BEFORE calling controller.Edit()
             Workout originalWorkoutEntry;
-            using (var context = new ApplicationDbContext(_options))
-            {
-                originalWorkoutEntry = context.Workouts.Find(workoutId);
-            }
+            originalWorkoutEntry = _context.Workouts.Find(workoutId);
 
             // act + assert
             var result = await controller.Edit(workoutId, invalidWorkoutEntry);
@@ -510,15 +495,12 @@ namespace AppTests.Controllers
 
 
             // get pre-controller.Edit() workout entry state and compare to current db state to verify that workout entry was not updated
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var currentWorkoutEntry = context.Workouts.Find(workoutId);
-                Assert.IsNotNull(currentWorkoutEntry, "Workout entry should still exist in the database");
+            var currentWorkoutEntry = _context.Workouts.Find(workoutId);
+            Assert.IsNotNull(currentWorkoutEntry, "Workout entry should still exist in the database");
 
-                // Assert that the database values have not changed
-                Assert.AreEqual(originalWorkoutEntry.EffortLevel, currentWorkoutEntry.EffortLevel, "EffortLevel should not have been updated");
-                Assert.AreEqual(originalWorkoutEntry.WorkoutType, currentWorkoutEntry.WorkoutType, "WorkoutType should not have been updated");
-            }
+            // Assert that the database values have not changed
+            Assert.AreEqual(originalWorkoutEntry.EffortLevel, currentWorkoutEntry.EffortLevel, "EffortLevel should not have been updated");
+            Assert.AreEqual(originalWorkoutEntry.WorkoutType, currentWorkoutEntry.WorkoutType, "WorkoutType should not have been updated");
         }
 
         [TestMethod]

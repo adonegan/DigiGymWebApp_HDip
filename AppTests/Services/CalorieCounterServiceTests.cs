@@ -26,76 +26,73 @@ namespace AppTests.Services
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            // set up shared db context for all test methods
+            _context = new ApplicationDbContext(_options);
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
             // seed user and test data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.FoodDiary.AddRange(
+                new Food
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.FoodDiary.AddRange(
-                    new Food
-                    {
-                        FoodID = 1,
-                        FoodName = "Breadroll",
-                        FoodBrand = "Cuisine De France",
-                        Serving = 1,
-                        Calories = 160,
-                        Protein = 5,
-                        Carbohydrates = 60,
-                        Fat = 20,
-                        MealType = MealTypes.Lunch,
-                        Grams = 60,
-                        CreatedAt = new DateTime(2024,8,27),
-                        Id = "testuser123"
-                    },
-                    new Food
-                    {
-                        FoodID = 2,
-                        FoodName = "Banana",
-                        FoodBrand = "Chiquita",
-                        Serving = 1,
-                        Calories = 41,
-                        Protein = 8,
-                        Carbohydrates = 70,
-                        Fat = 30,
-                        MealType = MealTypes.Lunch,
-                        Grams = 50,
-                        CreatedAt = new DateTime(2024,8,27),
-                        Id = "testuser123"
-                    },
-                    new Food
-                    {
-                        FoodID = 3,
-                        FoodName = "Nutrigrain Bar",
-                        FoodBrand = "Kellogs",
-                        Serving = 1,
-                        Calories = 174,
-                        Protein = 20,
-                        Carbohydrates = 90,
-                        Fat = 50,
-                        MealType = MealTypes.Snack,
-                        Grams = 45,
-                        CreatedAt = new DateTime(2024,8,28),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-
-            }
-            _context = new ApplicationDbContext(_options);
+                    FoodID = 1,
+                    FoodName = "Breadroll",
+                    FoodBrand = "Cuisine De France",
+                    Serving = 1,
+                    Calories = 160,
+                    Protein = 5,
+                    Carbohydrates = 60,
+                    Fat = 20,
+                    MealType = MealTypes.Lunch,
+                    Grams = 60,
+                    CreatedAt = new DateTime(2024,8,27),
+                    Id = "testuser123"
+                },
+                new Food
+                {
+                    FoodID = 2,
+                    FoodName = "Banana",
+                    FoodBrand = "Chiquita",
+                    Serving = 1,
+                    Calories = 41,
+                    Protein = 8,
+                    Carbohydrates = 70,
+                    Fat = 30,
+                    MealType = MealTypes.Lunch,
+                    Grams = 50,
+                    CreatedAt = new DateTime(2024,8,27),
+                    Id = "testuser123"
+                },
+                new Food
+                {
+                    FoodID = 3,
+                    FoodName = "Nutrigrain Bar",
+                    FoodBrand = "Kellogs",
+                    Serving = 1,
+                    Calories = 174,
+                    Protein = 20,
+                    Carbohydrates = 90,
+                    Fat = 50,
+                    MealType = MealTypes.Snack,
+                    Grams = 45,
+                    CreatedAt = new DateTime(2024,8,28),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
             _calorieCounterService = new CalorieCounterService(_context); // important, initialize!
         }
 
-        
         [TestMethod]
         public async Task Count_OneRecord()
         {

@@ -26,49 +26,47 @@ namespace AppTests.Controllers
                 .UseInMemoryDatabase(databaseName: uniqueDatabaseName)
                 .Options;
 
+            // set up shared db context for all test methods
+            _context = new ApplicationDbContext(_options);
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
             // seed user and test data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.WeightEntries.AddRange(
+                new WeightEntry
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.WeightEntries.AddRange(
-                    new WeightEntry
-                    {
-                        WeightID = 1,
-                        Weight = 160,
-                        Timestamp = new DateTime(2024, 8, 8),
-                        Id = "testuser123"
-                    },
-                    new WeightEntry
-                    {
-                        WeightID = 2,
-                        Weight = 161,
-                        Timestamp = new DateTime(2024, 8, 9),
-                        Id = "testuser123"
-                    },
-                    new WeightEntry
-                    {
-                        WeightID = 3,
-                        Weight = 162,
-                        Timestamp = new DateTime(2024, 8, 10),
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-            }
-            _context = new ApplicationDbContext(_options);
+                    WeightID = 1,
+                    Weight = 160,
+                    Timestamp = new DateTime(2024, 8, 8),
+                    Id = "testuser123"
+                },
+                new WeightEntry
+                {
+                    WeightID = 2,
+                    Weight = 161,
+                    Timestamp = new DateTime(2024, 8, 9),
+                    Id = "testuser123"
+                },
+                new WeightEntry
+                {
+                    WeightID = 3,
+                    Weight = 162,
+                    Timestamp = new DateTime(2024, 8, 10),
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
         }
-
 
         [TestMethod]
         public async Task Create_View()
@@ -116,12 +114,9 @@ namespace AppTests.Controllers
             Assert.AreEqual("Confirm", redirectResult.ActionName, "Redirect action name should be 'Confirm'");
 
             // act + assert
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var savedWeight = await context.WeightEntries.FirstOrDefaultAsync(w => w.WeightID == weight.WeightID);
-                Assert.IsNotNull(savedWeight, "Weightentry is saved to the database");
-                Assert.AreEqual(weight.WeightID, savedWeight.WeightID, "Saved weight id matches weight id");
-            }
+            var savedWeight = await _context.WeightEntries.FirstOrDefaultAsync(w => w.WeightID == weight.WeightID);
+            Assert.IsNotNull(savedWeight, "Weightentry is saved to the database");
+            Assert.AreEqual(weight.WeightID, savedWeight.WeightID, "Saved weight id matches weight id");
         }
 
 
@@ -164,17 +159,14 @@ namespace AppTests.Controllers
 
             _userManagerMock.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
 
-            using (var context = new ApplicationDbContext(_options))
+            _context.WeightEntries.Add(new WeightEntry
             {
-                context.WeightEntries.Add(new WeightEntry
-                {
-                    WeightID = weightIdToDelete,
-                    Weight = 167,
-                    Timestamp = new DateTime(2024, 8, 17),
-                    Id = "testuser123"
-                });
-                context.SaveChanges();
-            }
+                WeightID = weightIdToDelete,
+                Weight = 167,
+                Timestamp = new DateTime(2024, 8, 17),
+                Id = "testuser123"
+            });
+            _context.SaveChanges();
 
             var controller = new WeightController(_context, _userManagerMock.Object);
 
@@ -187,13 +179,10 @@ namespace AppTests.Controllers
             var redirectResult = (RedirectToActionResult)result;
             Assert.AreEqual("WeightEntries", redirectResult.ActionName, "Redirect action name should be 'WeightEntries'");
 
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var weightEntry = await context.WeightEntries
-                                      .Where(f => f.WeightID == weightIdToDelete && f.Id == userId)
-                                      .FirstOrDefaultAsync();
-                Assert.IsNull(weightEntry, "Weight entry should not be in the database");
-            }
+            var weightEntry = await _context.WeightEntries
+                                    .Where(f => f.WeightID == weightIdToDelete && f.Id == userId)
+                                    .FirstOrDefaultAsync();
+            Assert.IsNull(weightEntry, "Weight entry should not be in the database");
         }
 
 

@@ -34,6 +34,7 @@ namespace AppTests.Controllers
                 .Options;
 
             // initialize ApplicationDbContext
+            // shared db context for all test methods 
             _context = new ApplicationDbContext(_options);
 
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
@@ -60,41 +61,38 @@ namespace AppTests.Controllers
             );
 
             // seed data - 3 records + test user data
-            using (var context = new ApplicationDbContext(_options))
+            var testUser = new ApplicationUser
             {
-                var testUser = new ApplicationUser
+                UserName = "testuser@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                Id = "testuser123" 
+            };
+            _context.Users.Add(testUser);
+            _context.ProfileEntries.AddRange(
+                new UserProfile
                 {
-                    UserName = "testuser@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    Id = "testuser123" 
-                };
-                context.Users.Add(testUser);
-                context.ProfileEntries.AddRange(
-                    new UserProfile
-                    {
-                        ProfileID = 1,
-                        Height = 163,
-                        Gender = GenderTypes.Male,
-                        Id = "testuser123"
-                    },
-                    new UserProfile
-                    {
-                        ProfileID = 2,
-                        Height = 151,
-                        Gender = GenderTypes.Female,
-                        Id = "testuser123"
-                    },
-                    new UserProfile
-                    {
-                        ProfileID = 3,
-                        Height = 150,
-                        Gender = GenderTypes.Male,
-                        Id = "testuser123"
-                    }
-                );
-                context.SaveChanges();
-            }
+                    ProfileID = 1,
+                    Height = 163,
+                    Gender = GenderTypes.Male,
+                    Id = "testuser123"
+                },
+                new UserProfile
+                {
+                    ProfileID = 2,
+                    Height = 151,
+                    Gender = GenderTypes.Female,
+                    Id = "testuser123"
+                },
+                new UserProfile
+                {
+                    ProfileID = 3,
+                    Height = 150,
+                    Gender = GenderTypes.Male,
+                    Id = "testuser123"
+                }
+            );
+            _context.SaveChanges();
         }
 
         [TestMethod]
@@ -228,6 +226,9 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
+            _context.ProfileEntries.Add(newProfileEntry);
+            await _context.SaveChangesAsync();
+
             var updateToNewProfileEntry = new UserProfile
             {
                 ProfileID = profileId,
@@ -236,11 +237,13 @@ namespace AppTests.Controllers
                 Id = "testuser123"
             };
 
-            // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
+            // Detach any existing tracked entity with the same key
+            // System.InvalidOperationException: The instance of entity type 'UserProfile' cannot be tracked because another instance with the, AsNoTracking() issue
+            var existingEntry = _context.ChangeTracker.Entries<UserProfile>()
+                                         .FirstOrDefault(e => e.Entity.ProfileID == profileId);
+            if (existingEntry != null)
             {
-                context.ProfileEntries.Add(newProfileEntry);
-                context.SaveChanges();
+                _context.Entry(existingEntry.Entity).State = EntityState.Detached;
             }
 
             // act + assert
@@ -253,14 +256,12 @@ namespace AppTests.Controllers
             Assert.AreEqual("Profile", redirectResult.ActionName, "Redirect action name should be 'Profile'");
 
             // db check
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var updatedEntry = await context.ProfileEntries
-                                    .Where(p => p.ProfileID == profileId && p.Id == userId)
-                                    .FirstOrDefaultAsync();
-                Assert.IsNotNull(updatedEntry, "Updated food entry should not be null");
-                Assert.AreEqual(updateToNewProfileEntry.Height, updatedEntry.Height, "Height should match");
-            }
+            var updatedEntry = await _context.ProfileEntries
+                        .AsNoTracking()  // Use AsNoTracking to avoid tracking conflicts
+                        .Where(p => p.ProfileID == profileId && p.Id == userId)
+                        .FirstOrDefaultAsync();
+            Assert.IsNotNull(updatedEntry, "Updated food entry should not be null");
+            Assert.AreEqual(updateToNewProfileEntry.Height, updatedEntry.Height, "Height should match");
         }
 
         [TestMethod]
@@ -283,11 +284,8 @@ namespace AppTests.Controllers
             };
 
             // add the new entry to db
-            using (var context = new ApplicationDbContext(_options))
-            {
-                context.ProfileEntries.Add(newProfileEntry);
-                context.SaveChanges();
-            }
+            _context.ProfileEntries.Add(newProfileEntry);
+            _context.SaveChanges();
 
             // add invalid model state
             _controller.ModelState.AddModelError("Height", "Required");
@@ -302,10 +300,7 @@ namespace AppTests.Controllers
 
             // get current state of profileId 7 in db BEFORE calling controller.Edit()
             UserProfile originalProfileEntry;
-            using (var context = new ApplicationDbContext(_options))
-            {
-                originalProfileEntry = context.ProfileEntries.Find(profileId);
-            }
+            originalProfileEntry = _context.ProfileEntries.Find(profileId);
 
             // act + assert
             var result = await _controller.Edit(profileId, invalidProfileEntry);
@@ -318,14 +313,11 @@ namespace AppTests.Controllers
             Assert.AreEqual("Required", viewResult.ViewData.ModelState["Height"].Errors[0].ErrorMessage, "ModelState error message should be 'Required'");
 
             // get pre-controller.Edit() profile entry state and compare to current db state to verify that profile entry was not updated
-            using (var context = new ApplicationDbContext(_options))
-            {
-                var currentProfileEntry = context.ProfileEntries.Find(profileId);
-                Assert.IsNotNull(currentProfileEntry, "Profile entry should still exist in the database");
+            var currentProfileEntry = _context.ProfileEntries.Find(profileId);
+            Assert.IsNotNull(currentProfileEntry, "Profile entry should still exist in the database");
 
-                // Assert that the database value have not changed
-                Assert.AreEqual(originalProfileEntry.Height, currentProfileEntry.Height, "Height should not have been updated");
-            }
+            // Assert that the database value have not changed
+            Assert.AreEqual(originalProfileEntry.Height, currentProfileEntry.Height, "Height should not have been updated");
         }
 
         [TestMethod]
