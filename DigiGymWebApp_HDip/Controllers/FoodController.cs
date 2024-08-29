@@ -101,7 +101,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var userId = _userManager.GetUserId(User);
             var foodEntry = await _context.FoodDiary
                                   .Where(f => f.FoodID == id && f.Id == userId)
-                                   // Return first match
+                                  .AsNoTracking()
                                   .FirstOrDefaultAsync();
 
             var enumMealTypeValues = Enum.GetValues(typeof(MealTypes));
@@ -114,21 +114,27 @@ namespace DigiGymWebApp_HDip.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FoodID,FoodName,FoodBrand,Service,Calories,Protein,Carbohydrates,Fat,MealType,Grams,CreatedAt")] Food foodEntry)
+        public async Task<IActionResult> Edit(int id, [Bind("FoodID,FoodName,FoodBrand,Serving,Calories,Protein,Carbohydrates,Fat,MealType,Grams,CreatedAt")] Food foodEntry)
         {
             if (ModelState.IsValid)
             { 
                 var userId = _userManager.GetUserId(User);
                 var existingFoodEntry = await _context.FoodDiary
                                                   .Where(f => f.FoodID == id && f.Id == userId)
-                                                   // Important
-                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync();
 
-                foodEntry.Id = existingFoodEntry.Id;
-                foodEntry.CreatedAt = existingFoodEntry.CreatedAt;
+                existingFoodEntry.FoodID = foodEntry.FoodID;
+                existingFoodEntry.FoodName = foodEntry.FoodName;
+                existingFoodEntry.FoodBrand = foodEntry.FoodBrand;
+                existingFoodEntry.Serving = foodEntry.Serving;
+                existingFoodEntry.Calories = foodEntry.Calories;
+                existingFoodEntry.Protein = foodEntry.Protein;
+                existingFoodEntry.Carbohydrates = foodEntry.Carbohydrates;
+                existingFoodEntry.Fat = foodEntry.Fat;
+                existingFoodEntry.MealType = foodEntry.MealType;
+                existingFoodEntry.Grams = foodEntry.Grams;
 
-                _context.Update(foodEntry);
+                _context.Update(existingFoodEntry);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("FoodDiary");
