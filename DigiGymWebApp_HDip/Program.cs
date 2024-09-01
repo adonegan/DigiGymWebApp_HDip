@@ -12,7 +12,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var connectionString = builder.Configuration.GetConnectionString("AzureConnection") ?? throw new InvalidOperationException("Connection string 'AzureConnection' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(connectionString);
@@ -36,9 +36,11 @@ public class Program
             options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
             options.AddPolicy("TrainerOnly", policy => policy.RequireRole("Trainer"));
             options.AddPolicy("ClientOnly", policy => policy.RequireRole("Client"));
+            options.AddPolicy("ClientOrTrainer", policy =>
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole("Client") || context.User.IsInRole("Trainer")));
         });
 
-        
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<ICalorieCounterService, CalorieCounterService>();
