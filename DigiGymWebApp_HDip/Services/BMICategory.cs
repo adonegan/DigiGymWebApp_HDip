@@ -24,13 +24,13 @@ namespace DigiGymWebApp_HDip.Services
         {
             get
             {
-                return new string[] {"Underweight", "Normal", "Overweight", "Obese"};
+                return new string[] {"Underweight", "Normal", "Overweight", "Obese", "Add Weight and Height"};
             }
         }
 
         public async Task<string> GetBMICategory(double BMI)
         {
-            if (BMI <= 18.5)
+            if (BMI > 0 && BMI <= 18.5)
             {
                 return BMICategories[0];
             }
@@ -45,6 +45,10 @@ namespace DigiGymWebApp_HDip.Services
             else if (BMI > 30)
             {
                 return BMICategories[3];
+            } 
+            else if (BMI == 0)
+            {
+                return BMICategories[4];
             }
             else
             {

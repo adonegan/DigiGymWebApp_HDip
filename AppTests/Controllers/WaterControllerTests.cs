@@ -275,7 +275,7 @@ namespace AppTests.Controllers
         [TestMethod]
         public async Task Edit_1()
         {
-            // tests that valid id returns viewResult with correct model and selectList 
+            // tests that valid id returns viewResult with correct model
             // arrange
             var userId = "testuser123"; 
             var waterId = 1; 

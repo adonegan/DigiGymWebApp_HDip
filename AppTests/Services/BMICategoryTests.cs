@@ -53,5 +53,15 @@ namespace AppTests.Services
             // assert
             Assert.AreEqual("Obese", result, "Obese should be anything over 30");
         }
+
+        [TestMethod]
+        public async Task Get_Zero()
+        {
+            // act
+            var result = await _bmiCategoryService.GetBMICategory(0);
+
+            // assert
+            Assert.AreEqual("Add Weight and Height", result, "Zero should prompt the user to add height and weight details");
+        }
     }
 }
