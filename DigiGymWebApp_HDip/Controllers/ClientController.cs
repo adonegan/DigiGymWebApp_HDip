@@ -44,7 +44,7 @@ namespace DigiGymWebApp_HDip.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Attribute user to record
+                // attribute user to record
                 var userId = _userManager.GetUserId(User);
                 profile.Id = userId;
 
@@ -114,7 +114,7 @@ namespace DigiGymWebApp_HDip.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var profileEntry = await _context.ProfileEntries
-                                        // Leverage navigation property in View
+                                        // leverage navigation property in View
                                         .Include(p => p.User)
                                         .Where(p => p.Id == userId)
                                         .FirstOrDefaultAsync();
@@ -122,8 +122,8 @@ namespace DigiGymWebApp_HDip.Controllers
             // get latest weight entry
             var weightEntry = await _context.WeightEntries
                                         .Include(p => p.User)
-                                        .Where (p => p.Id == userId)
-                                        .OrderByDescending(w => w.Timestamp) 
+                                        .Where(p => p.Id == userId)
+                                        .OrderByDescending(w => w.Timestamp)
                                         .FirstOrDefaultAsync();
 
             ViewBag.WeightEntry = weightEntry;

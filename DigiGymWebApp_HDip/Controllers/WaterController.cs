@@ -1,13 +1,13 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
-using DigiGymWebApp_HDip.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
+    [Authorize(Policy = "ClientOnly")]
     public class WaterController : Controller
     {
         private readonly ApplicationDbContext _context;

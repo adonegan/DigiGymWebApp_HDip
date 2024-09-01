@@ -1,6 +1,6 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
-using DigiGymWebApp_HDip.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
+    [Authorize(Policy = "ClientOnly")]
     public class WorkoutController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,7 +27,7 @@ namespace DigiGymWebApp_HDip.Controllers
             var workouts = await _context.Workouts
                 .Where(f => f.Id == userId)
                 .Select(f => f.Date.Date)
-                 // Show single date, even if date has multiple entries
+                 // show single date, even if date has multiple entries
                 .Distinct()
                 .ToListAsync();
             return View(workouts);
