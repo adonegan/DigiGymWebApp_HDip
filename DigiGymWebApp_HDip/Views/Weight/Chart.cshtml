@@ -21,7 +21,7 @@
             <div id="dateData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model.Select(x => x.Timestamp.ToString("yyyy-MM-dd"))))</div>
 
             <div class="text-center pt-4">
-                <a asp-controller="Weight" asp-action="WeightEntries">Back to Weight Entries >></a>
+                <a asp-controller="Weight" asp-action="WeightEntries">All Weights</a>
             </div>
         </div>
     </div>

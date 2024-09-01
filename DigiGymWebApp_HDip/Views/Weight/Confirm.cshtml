@@ -9,8 +9,8 @@
 
         <h1 class="text-center dashed py-3">Confirmation</h1>
 
-        <div>
-            <dl class="row text-center">
+        <div class="text-center">
+            <dl class="row">
                 <dt class="col-sm-6 text-lg-end">
                     @Html.DisplayNameFor(model => model.Weight)
                 </dt>
@@ -26,7 +26,8 @@
             </dl>
             <div class="text-center">
                 <a asp-action="Edit" asp-route-id="@Model?.WeightID">Edit</a> |
-                <a asp-action="Index">Back to List </a>
+                <a asp-action="WeightEntries">All Weights </a> |
+                <a asp-controller="Client" asp-action="Profile">Back to Profile </a> |
             </div>
             <div class="text-center">
                 <a asp-action="Chart">See Progress chart</a>
