@@ -22,25 +22,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DigiGymWebApp_HDip</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
     <link rel="stylesheet" href="~/lib/bootstrap /dist/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DigiGymWebApp_HDip.styles.css" asp-append-version="true" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    @* <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script> *@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
-
-
-
 </head>
 <body>
     <header>
@@ -51,7 +40,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between mx-4">
                     <ul class="navbar-nav flex-grow-1">
 
                         @if (userRole == "Trainer")
@@ -69,25 +58,29 @@
                         }
                         else if (userRole == "Client")
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Client" asp-action="Profile">Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Food" asp-action="FoodDiary">Food</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Workout" asp-action="Workouts">Workout</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Weight" asp-action="WeightEntries">Weight</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Message" asp-action="Messages">Messages</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Water" asp-action="WaterEntries">Water</a>
-                            </li>
-
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Client Zone
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="Profile">Profile</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Food" asp-action="FoodDiary">Food</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Workout" asp-action="Workouts">Workouts</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Weight" asp-action="WeightEntries">Weight</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Water" asp-action="WaterEntries">Water</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="Message" asp-action="Messages">Messages</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Weight" asp-action="Chart">Weight Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Water" asp-action="Chart">Daily Water Chart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Food" asp-action="FoodDiary">Daily Food Chart</a>
+                        </li>
                         }
                         else if (userRole == "Admin")
                         {
@@ -112,29 +105,21 @@
 
                     </ul>
                     <partial name="_LoginPartial" />
-                 </div>
+                </div>
         </nav>
     </header>
-
-        @* <main role="main" class="pb-3 bg-dark"> *@
         <main role="main">
             @RenderBody()
         </main>
-
-
     <footer class="border-top footer">
         <div class="container text-light">
             &copy; 2024 - DigiGym
         </div>
     </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     @* needed for mobile hamburger *@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-b9j6l/1G3Y6FLU4PZ6cZLRGnb8wO2Hl6HjzO2xj6w6W2nHbG1I6O4W3e1pH0WZtx" crossorigin="anonymous"></script>
-
-
-
     <script src="~/js/chart.js" asp-append-version="true"></script>
     <script src="~/js/pie.js" asp-append-version="true"></script>
     <script src="~/js/water.js" asp-append-version="true"></script>
