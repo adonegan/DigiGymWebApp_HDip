@@ -28,9 +28,9 @@
                 label: 'Total Macros for Today',
                 data: [protein, carbs, fat],
                 backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)'
+                    '#008080',
+                    '#6c757d',
+                    '#7fbe9f'
                 ],
                 hoverOffset: 4
             }]
