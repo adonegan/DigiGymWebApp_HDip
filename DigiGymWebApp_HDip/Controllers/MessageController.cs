@@ -1,5 +1,6 @@
 ﻿using DigiGymWebApp_HDip.Data;
 using DigiGymWebApp_HDip.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,20 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Controllers
 {
+    [Authorize(Policy = "ClientOrTrainer")]
     public class MessageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<MessageController> _logger;
 
-        
-        public MessageController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, ILogger<MessageController> logger)
+        public MessageController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
-            _logger = logger;
+            _context.Database.EnsureCreated();
         }
-
 
         public async Task<IActionResult> Messages()
         {
@@ -64,13 +63,16 @@ namespace DigiGymWebApp_HDip.Controllers
                     .Select(g => g.First())
                     .ToList();
 
+                // show unread messages to the client
+                var unreadMessages = conversations.Where(m => m.ReceiverID == userId && !m.IsRead).ToList();
+                ViewBag.UnreadMessages = unreadMessages; 
+
                 // Client-specific view
                 return View("ClientMessages", clientConversations); 
             }
         }
 
-
-        public IActionResult Create(int? convoID)
+        public async Task<IActionResult> Create(int? convoID)
         {
             // if convoID - set in <input> field as ConversationID in form - has a value
             if (convoID.HasValue)
@@ -79,16 +81,15 @@ namespace DigiGymWebApp_HDip.Controllers
                 var conversation = _context.Conversations
                     .FirstOrDefault(c => c.ConversationID == convoID.Value);
 
-                // Pass conversation info to view
+                // pass conversation info to view
                 if (conversation != null)
                 {
                     ViewBag.ConversationInfo = conversation; 
                 }
             }
-            return View();
+            return View("Create");
         }
         
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Content,ConversationID")] Message message)
@@ -132,10 +133,9 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 // redirect to Messages action - ClientMessages.cshtml if client, TrainerMessages.cshtml if trainer
                 return RedirectToAction(nameof(Messages));
-
             }
 
-            // In case of model validation errors, repopulate conversation info
+            // in case of model validation errors, repopulate conversation info
             if (message.ConversationID != 0)
             {
                 var conversation = _context.Conversations
@@ -148,7 +148,6 @@ namespace DigiGymWebApp_HDip.Controllers
             }
             return View(message);
         }
-
 
         public async Task<IActionResult> Reply(int id)
         {
@@ -177,7 +176,6 @@ namespace DigiGymWebApp_HDip.Controllers
             return View(replyMessage);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reply([Bind("Content,ConversationID,ReceiverID")] Message message)
@@ -205,7 +203,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 if (conversation != null)
                 {
-                    // Update TrainerID if it's not already set
+                    // update TrainerID if it's not already set
                     // ClientID should already be set at this point so do nothing there
                     if (conversation.TrainerID == null)
                     {
@@ -218,7 +216,6 @@ namespace DigiGymWebApp_HDip.Controllers
                 // save updates and redirect to conversation thread page,and passing conversationID value info
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Thread", new { conversationId = message.ConversationID });
-
             }
 
             // repopulate conversation info if there are validation errors to fix
@@ -227,7 +224,6 @@ namespace DigiGymWebApp_HDip.Controllers
 
             return View(message);
         }
-
 
         public async Task<IActionResult> Thread(int conversationId)
         {
@@ -239,6 +235,14 @@ namespace DigiGymWebApp_HDip.Controllers
                 .OrderBy(m => m.Timestamp) // Order messages by timestamp
                 .ToListAsync();
 
+            // mark all messages in this conversation as read
+            var userId = _userManager.GetUserId(User);
+            foreach (var message in messages.Where(m => m.ReceiverID == userId && !m.IsRead))
+            {
+                message.IsRead = true;
+            }
+            await _context.SaveChangesAsync();
+
             // if there are no messages, return a NotFound notice
             if (messages == null || !messages.Any())
             {
@@ -248,9 +252,7 @@ namespace DigiGymWebApp_HDip.Controllers
             // display messages to view
             return View(messages);
         }
-
     }
-
 }    
 
 
