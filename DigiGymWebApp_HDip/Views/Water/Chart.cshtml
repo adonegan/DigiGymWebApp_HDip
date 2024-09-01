@@ -14,13 +14,16 @@
             <p class="text-center dashed pb-3">
                 See your daily water intake.
             </p>
+            <p class="text-center">
+                <a asp-action="Create">Create New</a>
+            </p>
             <div class="waterChartContainer">
                 <canvas id="waterChart"></canvas>
             </div>
 
             <div id="waterData" style="display: none;">@Html.Raw(JsonSerializer.Serialize(Model))</div>
             <div class="text-center pt-4">
-                <a asp-controller="Water" asp-action="WaterEntries">Back to Water Entries >></a>
+                <a asp-controller="Water" asp-action="WaterEntries">All Water Entries</a>
             </div>
             </div>
         </div>

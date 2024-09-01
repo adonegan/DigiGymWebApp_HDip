@@ -9,8 +9,8 @@
 
         <h1 class="text-center dashed py-3">Confirmation</h1>
 
-        <div>
-            <dl class="row text-center">
+        <div class="text-center">
+            <dl class="row">
                 <dt class="col-sm-6 text-lg-end">
                     @Html.DisplayNameFor(model => model.Amount)
                 </dt>
@@ -26,7 +26,7 @@
             </dl>
             <div class="text-center">
                 <a asp-action="Edit" asp-route-id="@Model?.WaterID">Edit</a> |
-                <a asp-action="WaterEntries">Back to List </a>
+                <a asp-action="WaterEntries">All Water Entries</a>
             </div>
             <div class="text-center">
                 <a asp-controller="Water" asp-action="Chart">See water chart >></a>
