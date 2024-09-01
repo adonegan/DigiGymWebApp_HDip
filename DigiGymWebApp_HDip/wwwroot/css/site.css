@@ -1,27 +1,11 @@
-/*
-COLOURS
-#fcfcfc;
-#0fc9e7;
-#3186b2;
-#4756ca;
-*/
-
 .navbar-brand {
     padding-left: 20px;
 }
 
-/* https://gradients.shecodes.io/gradients/3 */
 footer,
 nav {
-    /*background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));*/
-    /*background: #4756ca;*/
-    /*background: #00262e;*/
-    /*background: #057780;*/
     background: #345760;
-    /*color: black;*/
 }
-
-
 
 .card:hover {
     border: 2px solid #ffffff;
@@ -30,7 +14,6 @@ nav {
 .card-header {
     border-bottom: white 2px solid;
 }
-
 
 html {
     position: relative;
@@ -50,7 +33,6 @@ body {
 }
 
 .stats-box {
-    /*border-top: dashed rgb(182, 244, 146) 2px;*/
     border-top: dashed #345760 2px;
     padding-top: 20px;
     padding-right: 60px;
@@ -58,13 +40,7 @@ body {
 
 .dashed {
     border-bottom: dashed #345760 2px;
-    /*padding-top: 20px;*/
-/*    padding-right: 60px;*/
 }
-
-/*.food-stats-box {
-    border-bottom: dashed rgb(182, 244, 146) 2px;
-}*/
 
 .img-effects {
     margin-bottom: 5px;
@@ -98,10 +74,6 @@ body {
     padding-bottom: 100px;
 }
 
-/*li:hover {
-    background: #0fc9e7;
-}
-*/
 a.nav-link:hover {
     background: #0fc9e7;
 }
@@ -115,17 +87,6 @@ a.btn.btn-primary {
     a.btn.btn-primary:hover {
         color: black;
     }
-
-/*btn.btn-primary {
-    background: #345760;
-    color: white;
-    margin: 5px;
-}
-
-    btn.btn-primary:hover {
-        color: black;
-    }*/
-
 
 li {
     list-style-type:none;
@@ -146,12 +107,8 @@ table {
     text-align: center;
 }
 
-/*.table-color {
-    background-color: pink;
-}*/
-
 .mealtime-color {
-    background-color: pink;
+    background-color: #7fbe9f;
 }
 
 .btn.btn-primary {
@@ -162,11 +119,6 @@ table {
         background-color: #0fc9e7;
         border: #0fc9e7
     }
-
-/*.nav-link.text-light {
-    padding-left: 20px
-}*/
-
 
 .message-left {
     text-align: left;
@@ -180,7 +132,6 @@ table {
     margin-left: auto;
 }
 
-/* https://mdigi.tools/lighten-color/#345760 */
 .bg-darker {
     background-color: #548c9b;
     color: black;
@@ -218,7 +169,6 @@ table {
     word-wrap: break-word; 
 }
 
-
 /* Make the canvas responsive */
 #macroPie,
 #waterChart,
@@ -252,4 +202,21 @@ table {
     margin: 0 auto;
     display: flex;
     justify-content: center;
+}
+
+.badge-colour {
+    background-color: #345760;
+    color: white;
+    padding: 0.2em 0.6em;
+    border-radius: 0.25em;
+}
+
+.table-warning {
+    background-color: #057780;
+}
+
+.readMessage {
+    font-style: italic;
+    color: grey;
+    font-size: 0.8em;
 }
