@@ -3,7 +3,6 @@ using DigiGymWebApp_HDip.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigiGymWebApp_HDip.Controllers
@@ -65,7 +64,7 @@ namespace DigiGymWebApp_HDip.Controllers
 
                 // show unread messages to the client
                 var unreadMessages = conversations.Where(m => m.ReceiverID == userId && !m.IsRead).ToList();
-                ViewBag.UnreadMessages = unreadMessages; 
+                ViewBag.UnreadMessages = unreadMessages;
 
                 // Client-specific view
                 return View("ClientMessages", clientConversations); 

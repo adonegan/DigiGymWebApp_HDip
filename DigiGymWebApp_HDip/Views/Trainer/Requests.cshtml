@@ -1,19 +1,18 @@
 ﻿@model IEnumerable<DigiGymWebApp_HDip.Models.Message>
 @{
-    ViewData["Title"] = "TrainerMessages";
+    ViewData["Title"] = "TrainerRequest";
 }
 
 @{
-    // same as ClientMessages.cshtml, which as more comments
-    int counter = 0;
-    int maxLength = 40;
+    int counter = 0; 
+    int maxLength = 40; 
 }
 
 <div class="container">
-    <div class="row pre-footer">
+    <div class="row">
 
-        <h1 class="text-center pt-3">Your Conversations</h1>
-        <p class="text-center dashed pb-3">The client conversations you've responded to are listed below. Click 'View Conversation' to see updates.</p>
+        <h1 class="text-center pt-3">Trainer requests</h1>
+        <p class="text-center dashed pb-3">See requests from all Clients below.</p>
 
         <table class="table">
             <thead>
@@ -24,23 +23,21 @@
                     <th></th>
                 </tr>
             </thead>
-             <tbody>
+            <tbody>
                 @foreach (var message in Model)
                 {
-                    // if content length is greater than 40 characters, cut it off and add ellipsis, otherwise add the content
+                    // if content length is greater than 40 chars, cut it off and add ellipsis, otherwise add the content
                     var truncatedContent = message.Content.Length > maxLength
                     ? message.Content.Substring(0, maxLength) + "..."
                     : message.Content;
-
                     <tr>
-                        <td>@(++counter)</td>
+                        <td>@(++counter)</td> <!-- Increment counter -->
                         <td>@truncatedContent</td>
                         <td>@message.Timestamp.ToString("g")</td>
-                        <td><a asp-action="Thread" asp-route-conversationId="@message.ConversationID">View Conversation</a></td>
+                        <td><a asp-controller="Message" asp-action="Thread" asp-route-conversationId="@message.ConversationID">View Message</a></td>
                     </tr>
                 }
             </tbody>
         </table>
-
-    </div>
+     </div>
 </div>
